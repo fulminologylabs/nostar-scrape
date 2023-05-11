@@ -1,5 +1,5 @@
-# nostar-search
-Distributed Relay Search on Nostr
+# nostar-scrape
+
 
 ## R&D 
 (1) Use python-nostr to investigate working with relays
