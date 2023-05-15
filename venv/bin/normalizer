@@ -1,4 +1,4 @@
-#!/Users/nicholassandomeno/nostr/dev/nostar-search/venv/bin/python3.10
+#!/Users/nicholassandomeno/nostr/dev/nostar-scrape/venv/bin/python3.10
 # -*- coding: utf-8 -*-
 import re
 import sys

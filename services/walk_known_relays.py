@@ -1,30 +1,35 @@
 from pynostr.relay_manager import RelayManager
 from pynostr.filters import FiltersList, Filters
 from pynostr.event import EventKind
+
 from constants import RELAY_LIST
 import time
 import uuid
 from datetime import datetime, time, timedelta, timezone
 
+LIMIT =   37000
+TIMEOUT = 300
 #1_SUB_ID = "e304a8b2eb7d11ed82eaaa665a0df9e3" # 37836
-START_A = int(datetime.strptime("01/01/2021", "%d/%m/%Y").strftime("%s"))
-START_B = int(datetime.strptime("01/01/2020", "%d/%m/%Y").strftime("%s"))
-START_C = int(datetime.strptime("01/01/2020", "%d/%m/%Y").strftime("%s"))
+START_A = int(datetime.strptime("01/01/2019", "%m/%d/%Y").strftime("%s"))
+START_B = int(datetime.strptime("01/01/2020", "%m/%d/%Y").strftime("%s"))
+START_C = int(datetime.strptime("05/11/2023", "%m/%d/%Y").strftime("%s"))
+
 yesterday_midnight = datetime.combine(datetime.today(), time.min, tzinfo=timezone.utc).timestamp()
-#1_UNTIL = int(yesterday_midnight)
-UNTIL_A = int(datetime.strptime("09/01/2021", "%d/%m/%Y").strftime("%s"))
-UNTIL_B = int(datetime.strptime("01/01/2021", "%d/%m/%Y").strftime("%s"))
+UNTIL_YESTERDAY = int(yesterday_midnight)
+
+UNTIL_A = int(datetime.strptime("01/01/2019", "%m/%d/%Y").strftime("%s"))
+UNTIL_B = int(datetime.strptime("01/01/2021", "%m/%d/%Y").strftime("%s"))
 # TODO revisit the initial NIPS and see how we can evaluate 
 # when our subscription has retreived everything the Relay
 # has for the filter
 def trial():
-    relay_manager = RelayManager(timeout=300)
+    relay_manager = RelayManager(timeout=TIMEOUT)
     for relay in RELAY_LIST:
         relay_manager.add_relay(relay)
         #relay_manager.add_relay(relay)
 
     #filters = FiltersList([Filters(kinds=[EventKind.TEXT_NOTE], since=START, until=UNTIL)])
-    filters = FiltersList([Filters(kinds=[EventKind.TEXT_NOTE], since=START_C, until=UNTIL_A)])
+    filters = FiltersList([Filters(kinds=[EventKind.TEXT_NOTE], since=START_A, until=UNTIL_YESTERDAY, limit=LIMIT),])
     subscription_id = uuid.uuid1().hex
     print("SUB ID: ", subscription_id)
     # Start Connection    
