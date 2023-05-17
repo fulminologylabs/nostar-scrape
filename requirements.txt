@@ -1,3 +1,4 @@
+alembic==1.11.0
 asn1crypto==1.5.1
 certifi==2023.5.7
 cffi==1.15.1
@@ -5,17 +6,30 @@ charset-normalizer==3.1.0
 click==8.1.3
 coincurve==18.0.0
 cryptography==40.0.2
+exceptiongroup==1.1.1
+greenlet==2.0.2
 idna==3.4
+iniconfig==2.0.0
+Mako==1.2.4
 markdown-it-py==2.2.0
+MarkupSafe==2.1.2
 mdurl==0.1.2
+packaging==23.1
+pluggy==1.0.0
 pycparser==2.21
 Pygments==2.15.1
+pynostr @ git+https://github.com/fulminologylabs/pynostr.git@ecf58f7cd79e47926dacd625a4570e6f07efad6a
+pytest==7.3.1
+python-dateutil==2.8.2
 requests==2.30.0
 rich==13.3.5
+schedule==1.2.0
+six==1.16.0
+SQLAlchemy==2.0.13
 tlv8==0.10.0
+tomli==2.0.1
 tornado==6.3.2
 typer==0.9.0
 typing_extensions==4.5.0
 urllib3==2.0.2
 websocket-client==1.5.1
-pynostr @ git+https://github.com/fulminologylabs/pynostr.git@nip45

@@ -1,4 +1,6 @@
 # Core
+# TODO Find out what a good start date is
+EPOCH_START = "8/15/2022"
 RELAY_LIST = [
     #"wss://nostr-pub.wellorder.net",
     "wss://relay.damus.io",

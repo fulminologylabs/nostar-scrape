@@ -1,5 +1,12 @@
+from dateutil.parser import parse
 from constants import MS_MULTIPLE, HR, DAY, MIN
 from datetime import datetime, time, timedelta, timezone
+
+def handle_date_string(date: str) -> datetime:
+    """
+        Handle potentially unknown date format and return datetime
+    """
+    return parse(date)
 
 def init_scrape_subscription_since_param() -> int:
     """
@@ -85,6 +92,12 @@ def convert_datetime_to_unix_ts(dt: datetime) -> int:
 def convert_unix_ts_to_datetime(ts: int) -> datetime:
     return datetime.fromtimestamp(ts)
 
+def convert_date_str_to_datetime(date_str: str, fmt: str = "%m/%d/%Y") -> datetime:
+    return datetime.strptime(date_str, fmt)
+
+def convert_datetime_to_date_str(date: datetime, fmt: str = "%m/%d/%Y") -> str:
+    return datetime.strftime(date, fmt)
+
 def get_unix_ts_n_hours_from_now(ts: int, hours: int = 1) -> int:
     multiple = HR * hours
     return ts + multiple
@@ -140,3 +153,12 @@ def generate_date_range_from_ts(old_point: int, new_point: int) -> list:
     dt_end = convert_unix_ts_to_datetime(new_point)
 
     return generate_date_range_from_dts(old_point=dt_start, new_point=dt_end)
+
+def date_str_to_datetime(date: str, format: str = "%m/%d/%Y") -> datetime:
+    """
+        Check formats that are valid per datetime.datetime.strftime documentation
+        TODO add link to datetime documentation
+
+        returns datetime
+    """
+    return datetime.strftime(date, format)
