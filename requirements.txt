@@ -24,11 +24,13 @@ python-dateutil==2.8.2
 requests==2.30.0
 rich==13.3.5
 schedule==1.2.0
+scheduler==0.8.4
 six==1.16.0
 SQLAlchemy==2.0.13
 tlv8==0.10.0
 tomli==2.0.1
 tornado==6.3.2
+typeguard==4.0.0
 typer==0.9.0
 typing_extensions==4.5.0
 urllib3==2.0.2
