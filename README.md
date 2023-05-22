@@ -42,6 +42,31 @@ Start the DB
 ./scripts/init_db.sh
 ```
 
+To confirm the DB is up in running look for a running Postgres container in Docker, then open its terminal.
+Make sure you can access the DB through the Docker terminal with the following
+```
+psql -h localhost -U postgres -d nostar
+```
+Confirm that the migrations ran properly... Running
+```
+\dt
+```
+Should return you something like
+```
+ Schema |      Name       | Type  |  Owner   
+--------+-----------------+-------+----------
+ public | alembic_version | table | postgres
+ public | batch           | table | postgres
+ public | event_kind      | table | postgres
+ public | filter          | table | postgres
+ public | job             | table | postgres
+ public | job_type        | table | postgres
+ public | relay           | table | postgres
+ public | relay_config    | table | postgres
+ public | subscription    | table | postgres
+ public | text_note       | table | postgres
+(10 rows)alembic_versionalembic_version
+```
 ## Migrate the DB
 Alembic docs: https://alembic.sqlalchemy.org/en/latest/tutorial.html#the-migration-environment
 ```
@@ -52,14 +77,14 @@ functions.
 
 To apply the change
 ```
-    alembic upgrade head
+alembic upgrade head
 ```
 
 To upgrade or downgrade recent revisions
 ```
-    alembic downgrade -1
+alembic downgrade -1
     
-    alembic upgrade +1
+alembic upgrade +1
 ```
 ## Tests
 ```
