@@ -58,30 +58,27 @@ def upgrade() -> None:
         sa.Column('type', sa.String(256), nullable=False, unique=True),
     )
     # Job
-    op.create_table(
-        'job',
+    op.create_table('job',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
-        sa.Column('relay_id', sa.ForeignKey('relay.id', onupdate='CASCADE', ondelete='RESTRICT'),),
-        sa.Column('filter_id', sa.ForeignKey('filter.id', onupdate='CASCADE', ondelete='RESTRICT')),
-        sa.Column('batch_id', sa.ForeignKey('batch.id', onupdate='RESTRICT', ondelete='RESTRICT')),
-        sa.Column('job_type', sa.ForeignKey('job_type', onupdate='CASCADE', ondelete='CASCADE')),
+        sa.Column('relay_id', sa.Integer, sa.ForeignKey('relay.id', onupdate='CASCADE', ondelete='RESTRICT'),),
+        sa.Column('filter_id',sa.Integer, sa.ForeignKey('filter.id', onupdate='CASCADE', ondelete='RESTRICT')),
+        sa.Column('batch_id', sa.Integer, sa.ForeignKey('batch.batch_id', onupdate='RESTRICT', ondelete='RESTRICT')),
+        sa.Column('job_type', sa.Integer, sa.ForeignKey('job_type.id', onupdate='CASCADE', ondelete='CASCADE')),
     )
     # Subscription
-    op.create_table(
-        'subscription',
+    op.create_table('subscription',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
-        sa.Column('job_id', sa.ForeignKey('job.id', onupdate='CASCADE', ondelete='RESTRICT')),
+        sa.Column('job_id', sa.Integer, sa.ForeignKey('job.id', onupdate='CASCADE', ondelete='RESTRICT')),
         sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp()),
         sa.Column('start_time', sa.DateTime, nullable=False),
         sa.Column('end_time', sa.DateTime, nullable=False),
     )
     # Text Note
-    op.create_table(
-        'text_note',
+    op.create_table('text_note',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
-        sa.Column('event', sa.ForeignKey('event_kind.event_id', onupdate='CASCADE', ondelete='RESTRICT')),
+        sa.Column('event', sa.Integer, sa.ForeignKey('event_kind.event_id', onupdate='CASCADE', ondelete='RESTRICT')),
         sa.Column('data', sa.JSON, nullable=False),
-        sa.Column('job_id', sa.ForeignKey('job.id', onupdate='CASCADE', ondelete='RESTRICT'))
+        sa.Column('job_id', sa.Integer, sa.ForeignKey('job.id', onupdate='CASCADE', ondelete='RESTRICT'))
     )
 def downgrade() -> None:
     op.drop_table('text_note')
