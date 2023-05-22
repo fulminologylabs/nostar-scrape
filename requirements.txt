@@ -18,6 +18,7 @@ packaging==23.1
 pluggy==1.0.0
 psycopg2==2.9.6
 pycparser==2.21
+pydantic==1.10.7
 Pygments==2.15.1
 pynostr @ git+https://github.com/fulminologylabs/pynostr.git@ecf58f7cd79e47926dacd625a4570e6f07efad6a
 pytest==7.3.1
@@ -28,7 +29,9 @@ rich==13.3.5
 schedule==1.2.0
 scheduler==0.8.4
 six==1.16.0
-SQLAlchemy==2.0.13
+SQLAlchemy==1.4.41
+sqlalchemy2-stubs==0.0.2a34
+sqlmodel==0.0.8
 tlv8==0.10.0
 tomli==2.0.1
 tornado==6.3.2
