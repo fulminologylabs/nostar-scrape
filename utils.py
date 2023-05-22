@@ -1,6 +1,30 @@
+import os
+from dotenv import load_dotenv
 from dateutil.parser import parse
 from constants import MS_MULTIPLE, HR, DAY, MIN
 from datetime import datetime, time, timedelta, timezone
+
+def load_environment_variables() -> None:
+    """
+        Loads environment variables set in .env
+    """
+    load_dotenv()
+
+def get_db_uri(with_driver: bool = False) -> str:
+    """
+        Prequisite call to load_environment_variables() required.
+
+        returns postgres DB URI
+    """
+    user = os.getenv("DB_USER")
+    password = os.getenv("DB_PASSWORD")
+    host = os.getenv("DB_HOST")
+    port = os.getenv("DB_PORT")
+    db = os.getenv("DB_NAME")
+    if with_driver:
+        #driver = os.getenv("DB_DRIVER")
+        return f"postgresql://{user}:{password}@{host}:{port}/{db}"
+    return f"postgres://{user}:{password}@{host}:{port}/{db}"
 
 def handle_date_string(date: str) -> datetime:
     """

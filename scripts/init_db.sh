@@ -7,11 +7,11 @@ if ! [ -x "$(command -v psql)" ]; then
     exit 1
 fi
 # TODO update with alembic
-if ! [ -x "$(command -v sqlx)" ]; then
-    echo >&2 "Error: sqlx is not installed."
+if ! [ -x "$(command -v alembic)" ]; then
+    echo >&2 "Error: alembic is not installed."
     echo >&2 "Use:"
     # TODO update with alembic
-    echo >&2 "   cargo install sqlx-cli --no-default-features --features rustls,postgres"
+    echo >&2 "   pip install alembic"
     echo >&2 "to install it."
     exit 1
 fi
@@ -52,11 +52,11 @@ until psql -h "${DB_HOST}" -U "${DB_USER}" -p "${DB_PORT}" -d "postgres" -c '\q'
 done
 # Ready
 >&2 echo "Postgres is up and running on port ${DB_PORT}..."
-# Export URL
-DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
-export DATABASE_URL
-# Create
-sqlx database create
+
+# Create - TODO ensure that the proper permissions are established
+psql -h "${DB_HOST}" -U "${DB_USER}" -p "${DB_PORT}" -tc "SELECT 1 FROM pg_database WHERE datname = '${DB_NAME}'" | \
+    grep -q 1 || \
+    psql -U "${DB_USER}" -p "${DB_PORT}" -c "CREATE DATABASE '${DB_NAME}'"
 # Run Migrations
-sqlx migrate run
+alembic upgrade head # TODO check that this is the right alembic command to use
 >&2 echo "Postgres has been migrated... Ready to go."

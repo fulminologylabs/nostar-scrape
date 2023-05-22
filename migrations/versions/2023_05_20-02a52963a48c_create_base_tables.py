@@ -28,7 +28,7 @@ def upgrade() -> None:
     # Relay Config
     op.create_table(
         'relay_config',
-        sa.Column('relay_id', sa.ForeignKey('relay.id', onupdate="CASCADE", ondelete="CASCADE"), primary_key=True, autoincrement='ignore_fk')
+        sa.Column('relay_id', sa.Integer, sa.ForeignKey('relay.id', onupdate="CASCADE", ondelete="CASCADE"), primary_key=True, autoincrement='ignore_fk')
     )
     # Filter
     op.create_table(
@@ -93,4 +93,4 @@ def downgrade() -> None:
     op.drop_table('filter')
     op.drop_table('relay_config')
     op.drop_table('relay')
-    
+

@@ -16,11 +16,13 @@ MarkupSafe==2.1.2
 mdurl==0.1.2
 packaging==23.1
 pluggy==1.0.0
+psycopg2==2.9.6
 pycparser==2.21
 Pygments==2.15.1
 pynostr @ git+https://github.com/fulminologylabs/pynostr.git@ecf58f7cd79e47926dacd625a4570e6f07efad6a
 pytest==7.3.1
 python-dateutil==2.8.2
+python-dotenv==1.0.0
 requests==2.30.0
 rich==13.3.5
 schedule==1.2.0
