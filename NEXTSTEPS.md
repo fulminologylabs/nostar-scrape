@@ -6,6 +6,7 @@
     - Add indices and confirm unique constraints in the alembic revision
     - Create the models and schema in Pydantic
     - Pre-populate some data
+    - Test downgrade
 
 4. Write the daily and onboard processes for the scheduler
 5. Fix tests
