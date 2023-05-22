@@ -1,10 +1,10 @@
 # nostar-scrape
 
 ## Prerequisites
-(1) Docker
-(2) psql for Postgres
-(3) alembic for programmatic DB maintenance
-(4) python
+- Docker
+- psql for Postgres
+- alembic for programmatic DB maintenance
+- Python (3.10 ideally; 3.7+ should be fine)
 
 # Setup virtual environment
 ```
