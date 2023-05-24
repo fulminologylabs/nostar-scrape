@@ -5,6 +5,10 @@
     - Add indices and confirm unique constraints in the alembic revision
     
     - Create models/schemas
+    - Read: https://docs.sqlalchemy.org/en/20/core/metadata.html#accessing-tables-and-columns
+
+    - Read: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
+    
     - Pre-populate some data
     - Test downgrade
     - Establish DB Connection code for the application itself (https://testdriven.io/blog/fastapi-sqlmodel/)

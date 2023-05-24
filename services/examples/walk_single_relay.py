@@ -80,3 +80,4 @@ def start():
     print(f"TOTAL EVENTS SEEN: {events_seen}")
     print(f"First Event seen: {events[0].created_at}")
     print(f"Last Event seen: {events[-1].created_at}")
+    print(f"Last event: ", events[-1])

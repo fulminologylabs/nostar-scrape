@@ -6,7 +6,7 @@ from sqlalchemy import Table, MetaData, \
     Integer, \
     String, \
     DateTime
-# SQLAlchemy MetaData
+# SQLAlchemy MetaData 
 metadata = MetaData()
 """
     `relay` table
