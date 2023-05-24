@@ -8,7 +8,9 @@
     - Pre-populate some data
     - Test downgrade
     - Establish DB Connection code for the application itself (https://testdriven.io/blog/fastapi-sqlmodel/)
+    - Upgrade SQLModel and Alebmic to use async code (https://alembic.sqlalchemy.org/en/latest/cookbook.html)
 
 4. Write the daily and onboard processes for the scheduler
 5. Fix tests
 6. Write Relays, Relay Configs, Job Config, Filter Config, Subscription Record Database
+7. Logging system

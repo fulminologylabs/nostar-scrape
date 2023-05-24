@@ -19,7 +19,7 @@ def upgrade() -> None:
     # Relay
     op.create_table(
         'relay',
-        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True, index=True),
+        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('name', sa.String(256), nullable=True, unique=True),
         sa.Column('url', sa.String(1200), nullable=False, unique=True),
         sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
@@ -28,57 +28,68 @@ def upgrade() -> None:
     # Relay Config
     op.create_table(
         'relay_config',
-        sa.Column('relay_id', sa.Integer, sa.ForeignKey('relay.id', onupdate="CASCADE", ondelete="CASCADE"), primary_key=True, autoincrement='ignore_fk', index=True)
+        sa.Column('relay_id', sa.Integer, sa.ForeignKey('relay.id', onupdate="CASCADE", ondelete="CASCADE"), primary_key=True, autoincrement='ignore_fk'),
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
     )
     # Filter
     op.create_table(
         'filter',
-        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True, index=True),
-        sa.Column('name', sa.String(256), nullable=True, unique=True, index=True),
-        sa.Column('json', sa.JSON)
+        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
+        sa.Column('name', sa.String(256), nullable=True, unique=True),
+        sa.Column('json', sa.JSON, nullable=False),
+        sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp()),
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
     )
     # Event Kind
     op.create_table(
         'event_kind',
-        sa.Column('event_id', sa.Integer, primary_key=True, autoincrement=True, index=True),
+        sa.Column('event_id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('name', sa.String(256), nullable=True, unique=True),
-        sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True)
+        sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
     )
     # Batch
     op.create_table(
         'batch',
-        sa.Column('batch_id', sa.Integer, primary_key=True, autoincrement=True, index=True),
+        sa.Column('batch_id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('created_at', sa.DateTime, nullable=False, index=True),
         sa.Column('completed_at', sa.DateTime, nullable=True, index=True)
     )
     # Job Type
     op.create_table(
         'job_type',
-        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True, index=True),
+        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('type', sa.String(256), nullable=False, unique=True),
+        sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
     )
     # Job
     op.create_table('job',
-        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True, index=True),
+        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('relay_id', sa.Integer, sa.ForeignKey('relay.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
         sa.Column('filter_id',sa.Integer, sa.ForeignKey('filter.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
         sa.Column('batch_id', sa.Integer, sa.ForeignKey('batch.batch_id', onupdate='RESTRICT', ondelete='RESTRICT'), index=True),
         sa.Column('job_type', sa.Integer, sa.ForeignKey('job_type.id', onupdate='CASCADE', ondelete='CASCADE'), index=True),
+        sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
     )
     # Subscription
     op.create_table('subscription',
-        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True, index=True),
+        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('job_id', sa.Integer, sa.ForeignKey('job.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
         sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
         sa.Column('start_time', sa.DateTime, nullable=False, index=True),
         sa.Column('end_time', sa.DateTime, nullable=False, index=True),
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
     )
     # Text Note
     op.create_table('text_note',
-        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True, index=True),
+        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('event', sa.Integer, sa.ForeignKey('event_kind.event_id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
         sa.Column('data', sa.JSON, nullable=False),
-        sa.Column('job_id', sa.Integer, sa.ForeignKey('job.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True)
+        sa.Column('job_id', sa.Integer, sa.ForeignKey('job.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
+        sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
     )
 def downgrade() -> None:
     op.drop_table('text_note')
