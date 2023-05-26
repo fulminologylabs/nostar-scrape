@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+# TODO these will be used as an intermediate
+# mapping step between the responses from the 
+# websocket and our DB models
 """
 Example Event (text_note):  
 [

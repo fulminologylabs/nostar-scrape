@@ -8,8 +8,8 @@
     - Read: https://docs.sqlalchemy.org/en/20/core/metadata.html#accessing-tables-and-columns
 
     - Read: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
-    
-    - Pre-populate some data
+
+    - Pre-populate some data (within pipeline)
     - Test downgrade
     - Establish DB Connection code for the application itself (https://testdriven.io/blog/fastapi-sqlmodel/)
     - Upgrade SQLModel and Alebmic to use async code (https://alembic.sqlalchemy.org/en/latest/cookbook.html)

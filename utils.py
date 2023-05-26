@@ -1,8 +1,8 @@
 import os
 from dotenv import load_dotenv
 from dateutil.parser import parse
-from constants import MS_MULTIPLE, HR, DAY, MIN
 from datetime import datetime, time, timedelta, timezone
+from constants import MS_MULTIPLE, HR, DAY, MIN, EPOCH_START
 
 def load_environment_variables() -> None:
     """
@@ -121,6 +121,9 @@ def convert_date_str_to_datetime(date_str: str, fmt: str = "%m/%d/%Y") -> dateti
 
 def convert_datetime_to_date_str(date: datetime, fmt: str = "%m/%d/%Y") -> str:
     return datetime.strftime(date, fmt)
+
+def default_relay_config_epoch_start() -> datetime:
+    return convert_date_str_to_datetime(EPOCH_START)
 
 def get_unix_ts_n_hours_from_now(ts: int, hours: int = 1) -> int:
     multiple = HR * hours

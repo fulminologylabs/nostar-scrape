@@ -7,14 +7,14 @@ Create Date: 2023-05-20 18:03:57.640076
 """
 from alembic import op
 import sqlalchemy as sa
-
+from utils import default_relay_config_epoch_start
 # revision identifiers, used by Alembic.
 revision = '02a52963a48c'
 down_revision = None
 branch_labels = None
 depends_on = None
 
-
+default_epoch_start = default_relay_config_epoch_start()
 def upgrade() -> None:
     # Relay
     op.create_table(
@@ -29,6 +29,7 @@ def upgrade() -> None:
     op.create_table(
         'relay_config',
         sa.Column('relay_id', sa.Integer, sa.ForeignKey('relay.id', onupdate="CASCADE", ondelete="CASCADE"), primary_key=True, autoincrement='ignore_fk'),
+        sa.Column('epoch_start', sa.DateTime, server_default=default_epoch_start),
         sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
     )
     # Filter

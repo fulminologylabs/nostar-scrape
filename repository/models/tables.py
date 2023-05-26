@@ -6,8 +6,10 @@ from sqlalchemy import Table, MetaData, \
     Integer, \
     String, \
     DateTime
+from utils import default_relay_config_epoch_start
 # SQLAlchemy MetaData 
 metadata = MetaData()
+default_epoch_relay_config = default_relay_config_epoch_start()
 """
     `relay` table
 """
@@ -32,6 +34,7 @@ relay_config = Table(
         primary_key=True, 
         nullable=False
     ),
+    Column("epoch_start", DateTime, server_default=default_epoch_relay_config),
     Column("updated_at", DateTime, server_onupdate=func.current_timestamp())
 )
 """
