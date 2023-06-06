@@ -1,8 +1,12 @@
 import os
+import uuid
 from dotenv import load_dotenv
 from dateutil.parser import parse
 from datetime import datetime, time, timedelta, timezone
 from constants import MS_MULTIPLE, HR, DAY, MIN, EPOCH_START
+
+def new_subscription_id() -> str:
+    return uuid.uuid1().hex
 
 def load_environment_variables() -> None:
     """

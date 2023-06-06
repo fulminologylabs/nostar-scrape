@@ -5,7 +5,7 @@ from sqlalchemy import Table, MetaData, \
     func, \
     Integer, \
     String, \
-    DateTime
+    DateTime, declarative
 from utils import default_relay_config_epoch_start
 # SQLAlchemy MetaData 
 metadata = MetaData()

@@ -4,7 +4,7 @@
     - Fix FK Constraints on the alembic revision
     - Add indices and confirm unique constraints in the alembic revision
     
-    - Create models/schemas
+    - Create models/schemas --> scrap schemas for mapping functions
     - Read: https://docs.sqlalchemy.org/en/20/core/metadata.html#accessing-tables-and-columns
 
     - Read: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
