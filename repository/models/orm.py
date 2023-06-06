@@ -1,9 +1,9 @@
-from typing import Any
+from typing import Any, List
 from datetime import datetime
 from sqlalchemy import func, ForeignKey
 from sqlalchemy.types import JSON, DateTime
 from utils import default_relay_config_epoch_start
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 # Epoch start
 default_epoch_relay_config = default_relay_config_epoch_start()
 # Type Alias for Mapping Postgres JSON to Python Dict
@@ -26,6 +26,8 @@ class Relay(Base):
     name       : Mapped[str] = mapped_column(unique=True, index=True, nullable=True)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at : Mapped[datetime] = mapped_column(index=True, server_onupdate=func.current_timestamp())
+    # Relationships
+    relay_config : Mapped["RelayConfig"] = relationship(back_populates="relay")
 
 
 class RelayConfig(Base):
@@ -33,6 +35,8 @@ class RelayConfig(Base):
     relay_id    : Mapped[int] = mapped_column(ForeignKey("relay.id", onupdate="CASCADE", ondelete="CASCADE"), primary_key=True, nullable=False,)
     epoch_start : Mapped[datetime] = mapped_column(server_default=default_epoch_relay_config)
     updated_at  : Mapped[datetime] = mapped_column(server_onupdate=(func.current_timestamp()))
+    # Relationships
+    relay       : Mapped["Relay"] = relationship(back_populates="relay_config")
 
 
 class Filter(Base):
@@ -66,6 +70,7 @@ class JobType(Base):
     type       : Mapped[str] = mapped_column(nullable=False, unique=True)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
+    # Relationships
 
 
 class Job(Base):
@@ -77,7 +82,12 @@ class Job(Base):
     job_type   : Mapped[int] = mapped_column(ForeignKey("job_type.id", onupdate="CASCADE", ondelete="CASCADE"), index=True)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())    
-
+    # Relationships
+    relay         : Mapped["Relay"] = relationship()
+    filter        : Mapped["Filter"] = relationship()
+    batch         : Mapped["Batch"] = relationship()
+    job_name      : Mapped["JobType"] = relationship()    
+    subscriptions : Mapped[List["Subscription"]] = relationship(back_populates="job")
 
 class Subscription(Base):
     __tablename__ = "subscription"
@@ -87,6 +97,8 @@ class Subscription(Base):
     end_time   : Mapped[datetime] = mapped_column(nullable=False, index=True)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp()) 
+    # Relationships
+    job        : Mapped["Job"] = relationship(back_populates="subs")
 
 
 class TextNote(Base):
@@ -97,4 +109,7 @@ class TextNote(Base):
     data       : Mapped[dict_from_json] = mapped_column(nullable=False)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())     
+    # Relationships
+    event_kind : Mapped["EventKind"] = relationship()
+    job        : Mapped["Job"] = relationship()
 
