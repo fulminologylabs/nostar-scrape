@@ -2,11 +2,12 @@
     - Adapt init_db.sh to Python/Alembic
     - How do we create the DB Schema programmatically with Alembic?
     - Fix FK Constraints on the alembic revision
-    - Add indices and confirm unique constraints in the alembic revision
-    
+    - Add indices and confirm unique constraints in the alembic revision 
     - Create models/schemas --> scrap schemas for mapping functions
     - Read: https://docs.sqlalchemy.org/en/20/core/metadata.html#accessing-tables-and-columns
 
+    - Transitions TextNote Table, Model, Alembic code to Event table
+    - Transition EventKind PK to not be AUTO INCREMENT
     - Read: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
 
     - Pre-populate some data (within pipeline)

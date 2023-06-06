@@ -50,7 +50,7 @@ class Filter(Base):
 
 class EventKind(Base):
     __tablename__ = "event_kind"
-    event_id    : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    event_id    : Mapped[int] = mapped_column(primary_key=True)
     name        : Mapped[str] = mapped_column(nullable=True, unique=True)
     created_at  : Mapped[datetime] = mapped_column(server_default=func.current_timestamp(), index=True)
     updated_at  : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())

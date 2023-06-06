@@ -5,6 +5,7 @@
 # Also reference the Event DataClass from pynostr
 from dacite import from_dict
 from pynostr.event import Event, EventKind
+from repository.models import TextNote
 # TODO NEXT -
 # (1) Test from_dict operation - using examples/test_process.py
 # (2) Go from dataclass to SQLAlchemy Model - using examples/test_process.py
@@ -31,12 +32,15 @@ Example Event (text_note):
     }
 ]
 """
-def _convert(event: Event) -> None:
+def _db_text_note(event: Event, job_id: int) -> TextNote:
     """
         TODO return a type that can be 
         directly injected into the DB
     """
-    pass
+    return TextNote(
+        event=EventKind.TEXT_NOTE,
+        job_id=job_id,
+    )
 # def _convert_raw(event: list) -> Event:
 #     if event[0] == "EVENT":
 #         t_event = from_dict(
