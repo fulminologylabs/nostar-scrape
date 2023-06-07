@@ -8,6 +8,7 @@
 
     - Transitions TextNote Table, Model, Alembic code to Event table
     - Transition EventKind PK to not be AUTO INCREMENT
+    - Read about Tornado and explore Async options
     - Read: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
 
     - Pre-populate some data (within pipeline)

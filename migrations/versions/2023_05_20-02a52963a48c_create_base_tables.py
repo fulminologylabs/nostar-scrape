@@ -44,7 +44,7 @@ def upgrade() -> None:
     # Event Kind
     op.create_table(
         'event_kind',
-        sa.Column('event_id', sa.Integer, primary_key=True, autoincrement=True),
+        sa.Column('event_id', sa.Integer, primary_key=True),
         sa.Column('name', sa.String(256), nullable=True, unique=True),
         sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
         sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
@@ -83,17 +83,22 @@ def upgrade() -> None:
         sa.Column('end_time', sa.DateTime, nullable=False, index=True),
         sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
     )
-    # Text Note
-    op.create_table('text_note',
-        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
-        sa.Column('event', sa.Integer, sa.ForeignKey('event_kind.event_id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
-        sa.Column('data', sa.JSON, nullable=False),
+    # Event
+    op.create_table('event',
+        sa.Column('id', sa.Integer, primary_key=True),
+        sa.Column('pubkey', sa.String(256), nullable=False),
+        sa.column('created_at', sa.Integer, nullable=False),
+        sa.Column('event_kind_id', sa.Integer, sa.ForeignKey('event_kind.event_id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
+        sa.Column('tags', sa.JSON, nullable=False),
+        # TODO use a more appropriate type
+        sa.Column('content', sa.String(1000000000), nullable=False),
+        sa.Column('signature', sa.String(256), nullable=False),
         sa.Column('job_id', sa.Integer, sa.ForeignKey('job.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
-        sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
+        sa.Column('inserted_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
         sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
     )
 def downgrade() -> None:
-    op.drop_table('text_note')
+    op.drop_table('event')
     op.drop_table('subscription')
     op.drop_table('job')
     op.drop_table('job_type')

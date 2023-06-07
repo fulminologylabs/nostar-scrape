@@ -89,6 +89,7 @@ class Job(Base):
     job_name      : Mapped["JobType"] = relationship()    
     subscriptions : Mapped[List["Subscription"]] = relationship(back_populates="job")
 
+
 class Subscription(Base):
     __tablename__ = "subscription"
     id         : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -101,15 +102,19 @@ class Subscription(Base):
     job        : Mapped["Job"] = relationship(back_populates="subs")
 
 
-class TextNote(Base):
-    __tablename__ = "text_note"
-    id         : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    event      : Mapped[int] = mapped_column(ForeignKey("event_kind.event_id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
-    job_id     : Mapped[int] = mapped_column(ForeignKey("job.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
-    data       : Mapped[dict_from_json] = mapped_column(nullable=False)
-    created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
-    updated_at : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())     
+class Event(Base):
+    __tablename__ = "event"
+    id            : Mapped[int] = mapped_column(primary_key=True)
+    event_kind_id : Mapped[int] = mapped_column(ForeignKey("event_kind.event_id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
+    job_id        : Mapped[int] = mapped_column(ForeignKey("job.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
+    content       : Mapped[str] = mapped_column(nullable=False)
+    tags          : Mapped[dict_from_json] = mapped_column(nullable=False)
+    pubkey        : Mapped[str] = mapped_column(nullable=False)
+    created_at    : Mapped[int] = mapped_column(nullable=False)
+    signature     : Mapped[str] = mapped_column(nullable=False)
+    inserted_at   : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
+    updated_at    : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())     
     # Relationships
-    event_kind : Mapped["EventKind"] = relationship()
+    event_kind: Mapped["EventKind"] = relationship()
     job        : Mapped["Job"] = relationship()
 

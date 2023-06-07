@@ -32,7 +32,7 @@ Example Event (text_note):
     }
 ]
 """
-def _db_text_note(event: Event, job_id: int) -> TextNote:
+def map_text_note(event: Event, job_id: int) -> TextNote:
     """
         TODO return a type that can be 
         directly injected into the DB
@@ -41,6 +41,9 @@ def _db_text_note(event: Event, job_id: int) -> TextNote:
         event=EventKind.TEXT_NOTE,
         job_id=job_id,
     )
+
+def get_text_note(id: int) -> TextNote:
+    pass
 # def _convert_raw(event: list) -> Event:
 #     if event[0] == "EVENT":
 #         t_event = from_dict(
