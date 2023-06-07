@@ -32,6 +32,13 @@ Example Event (text_note):
     }
 ]
 """
+def tag_to_dict(e: Event) -> dict:
+    """
+        Takes in a tag list from an Event and returns a dict
+        where the Tag keys (#e, #p). See constants.SUPPORTED_TAGS
+    """
+    tag_dict = 
+
 def map_text_note(event: Event, job_id: int) -> TextNote:
     """
         TODO return a type that can be 

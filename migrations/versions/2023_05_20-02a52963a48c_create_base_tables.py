@@ -89,7 +89,7 @@ def upgrade() -> None:
         sa.Column('pubkey', sa.String(256), nullable=False),
         sa.column('created_at', sa.Integer, nullable=False),
         sa.Column('event_kind_id', sa.Integer, sa.ForeignKey('event_kind.event_id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
-        sa.Column('tags', sa.JSON, nullable=False),
+        sa.Column('tags', sa.JSON, nullable=True),
         # TODO use a more appropriate type
         sa.Column('content', sa.String(1000000000), nullable=False),
         sa.Column('signature', sa.String(256), nullable=False),

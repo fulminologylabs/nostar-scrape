@@ -1,3 +1,4 @@
+from enum import Enum
 # Core
 # TODO Find out what a good start date is
 EPOCH_START = "8/15/2022"
@@ -13,3 +14,8 @@ SECOND      = 1
 MIN         = 60
 HR          = 60 * 60
 DAY         = 60 * 60 * 24
+
+class SUPPORTED_TAGS(Enum):
+    EVENT  = "#e"
+    PUBKEY = "#p"
+  

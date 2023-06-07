@@ -108,7 +108,7 @@ class Event(Base):
     event_kind_id : Mapped[int] = mapped_column(ForeignKey("event_kind.event_id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     job_id        : Mapped[int] = mapped_column(ForeignKey("job.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     content       : Mapped[str] = mapped_column(nullable=False)
-    tags          : Mapped[dict_from_json] = mapped_column(nullable=False)
+    tags          : Mapped[dict_from_json] = mapped_column(nullable=True)
     pubkey        : Mapped[str] = mapped_column(nullable=False)
     created_at    : Mapped[int] = mapped_column(nullable=False)
     signature     : Mapped[str] = mapped_column(nullable=False)
