@@ -3,6 +3,7 @@
 # and map websocket events
 # to DB schema
 # Also reference the Event DataClass from pynostr
+from typing import Optional
 from dacite import from_dict
 from pynostr.event import Event, EventKind
 from repository.models import TextNote
@@ -32,12 +33,18 @@ Example Event (text_note):
     }
 ]
 """
-def tag_to_dict(e: Event) -> dict:
+def tag_to_dict(e: Event) -> Optional[dict]:
     """
         Takes in a tag list from an Event and returns a dict
         where the Tag keys (#e, #p). See constants.SUPPORTED_TAGS
     """
-    tag_dict = 
+    if not e.tags:
+        # No Tags found and it is a nullable field
+        return None
+    tag_dict = dict()
+    for tag in e.tags:
+        tag_dict[tag[0]] = tag[1]
+    return tag_dict
 
 def map_text_note(event: Event, job_id: int) -> TextNote:
     """
