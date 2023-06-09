@@ -27,7 +27,7 @@ class Relay(Base):
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at : Mapped[datetime] = mapped_column(index=True, server_onupdate=func.current_timestamp())
     # Relationships
-    relay_config : Mapped["RelayConfig"] = relationship(back_populates="relay")
+    relay_config : Mapped[Optional["RelayConfig"]] = relationship(back_populates="relay")
 
 
 class RelayConfig(Base):
@@ -99,7 +99,7 @@ class Subscription(Base):
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp()) 
     # Relationships
-    job        : Mapped["Job"] = relationship(back_populates="subs")
+    job        : Mapped[Optional["Job"]] = relationship(back_populates="subs")
 
 
 class Event(Base):
