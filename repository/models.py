@@ -1,5 +1,5 @@
-from typing import Any, List
 from datetime import datetime
+from typing import Any, List, Optional
 from sqlalchemy import func, ForeignKey
 from sqlalchemy.types import JSON, DateTime
 from utils import default_relay_config_epoch_start
@@ -23,7 +23,7 @@ class Relay(Base):
     __tablename__ = "relay"
     id         : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     url        : Mapped[str] = mapped_column(unique=True, index=True, nullable=False)
-    name       : Mapped[str] = mapped_column(unique=True, index=True, nullable=True)
+    name       : Mapped[Optional[str]] = mapped_column(unique=True, index=True, nullable=True)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at : Mapped[datetime] = mapped_column(index=True, server_onupdate=func.current_timestamp())
     # Relationships
@@ -43,7 +43,7 @@ class Filter(Base):
     __tablename__ = "filter"
     id          : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     json        : Mapped[dict_from_json] = mapped_column(nullable=False)
-    name        : Mapped[str] = mapped_column(nullable=True, unique=True)
+    name        : Mapped[Optional[str]] = mapped_column(nullable=True, unique=True)
     created_at  : Mapped[datetime] = mapped_column(server_default=func.current_timestamp())
     updated_at  : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
     
@@ -51,7 +51,7 @@ class Filter(Base):
 class EventKind(Base):
     __tablename__ = "event_kind"
     event_id    : Mapped[int] = mapped_column(primary_key=True)
-    name        : Mapped[str] = mapped_column(nullable=True, unique=True)
+    name        : Mapped[Optional[str]] = mapped_column(nullable=True, unique=True)
     created_at  : Mapped[datetime] = mapped_column(server_default=func.current_timestamp(), index=True)
     updated_at  : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
 
@@ -108,7 +108,7 @@ class Event(Base):
     event_kind_id : Mapped[int] = mapped_column(ForeignKey("event_kind.event_id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     job_id        : Mapped[int] = mapped_column(ForeignKey("job.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     content       : Mapped[str] = mapped_column(nullable=False)
-    tags          : Mapped[dict_from_json] = mapped_column(nullable=True)
+    tags          : Mapped[Optional[dict_from_json]] = mapped_column(nullable=True)
     pubkey        : Mapped[str] = mapped_column(nullable=False)
     created_at    : Mapped[int] = mapped_column(nullable=False)
     signature     : Mapped[str] = mapped_column(nullable=False)

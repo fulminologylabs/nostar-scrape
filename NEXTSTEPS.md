@@ -5,9 +5,11 @@
     - Add indices and confirm unique constraints in the alembic revision 
     - Create models/schemas --> scrap schemas for mapping functions
     - Read: https://docs.sqlalchemy.org/en/20/core/metadata.html#accessing-tables-and-columns
-
     - Transitions TextNote Table, Model, Alembic code to Event table
     - Transition EventKind PK to not be AUTO INCREMENT
+
+    - Read about SQLAlchemy ORM: https://docs.sqlalchemy.org/en/20/orm/
+    - Read about SQLAlchemy Integration with dataclasses: https://docs.sqlalchemy.org/en/20/orm/dataclasses.html
     - Read about Tornado and explore Async options
     - Read: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
 
