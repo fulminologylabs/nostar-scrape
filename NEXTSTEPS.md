@@ -12,6 +12,7 @@
     - Read about SQLAlchemy Integration with dataclasses: https://docs.sqlalchemy.org/en/20/orm/dataclasses.html
     - Read about Tornado and explore Async options
     - Read: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
+    - Determine what type to use for `content` on the Event table
 
     - Pre-populate some data (within pipeline)
     - Test downgrade
