@@ -9,8 +9,28 @@ class DBService:
     def __init__(self):
         #load_environment_variables()
         #self._db_uri = get_db_uri(with_driver=True)
-        self.session = Session(bind=engine)
+        self._engine = engine
     
+    def _insert_or_update(self, db_objs: list):
+        """
+            The only method that should touch session
+
+            returns result
+        """
+        try:
+            with Session(engine) as session:
+                session.begin()
+                try:
+                    session.add_all(db_objs)
+                    session.commit()
+                except Exception as e:
+                    # TODO Handle error
+                    session.rollback()
+                    raise e
+        except Exception as e:
+            # TODO Error handling
+            raise e
+
     def select_relay_by_id(self, relay_id: int) -> Relay:
         sql = select(Relay).where(Relay.id == relay_id)
         result = self.session.scalars(sql)

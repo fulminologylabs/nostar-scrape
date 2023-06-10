@@ -5,6 +5,7 @@
     - Add indices and confirm unique constraints in the alembic revision 
     - Create models/schemas --> scrap schemas for mapping functions
     - Read: https://docs.sqlalchemy.org/en/20/core/metadata.html#accessing-tables-and-columns
+    - Read: https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#basic-relationship-patterns
     - Transitions TextNote Table, Model, Alembic code to Event table
     - Transition EventKind PK to not be AUTO INCREMENT
 

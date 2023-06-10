@@ -74,6 +74,10 @@ class JobType(Base):
 
 
 class Job(Base):
+    """
+        Consider this approach to the Job table in the future (if it fits):
+        https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#setting-bi-directional-many-to-many
+    """
     __tablename__ = "job"
     id         : Mapped[int] = mapped_column(primary_key=True)
     relay_id   : Mapped[int] = mapped_column(ForeignKey("relay.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
