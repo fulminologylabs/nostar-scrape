@@ -6,7 +6,7 @@
 from typing import Optional
 from dacite import from_dict
 from pynostr.event import Event, EventKind
-from repository.models import TextNote
+from repository.models import Event as DBEvent
 # TODO NEXT -
 # (1) Test from_dict operation - using examples/test_process.py
 # (2) Go from dataclass to SQLAlchemy Model - using examples/test_process.py
@@ -46,17 +46,17 @@ def tag_to_dict(e: Event) -> Optional[dict]:
         tag_dict[tag[0]] = tag[1]
     return tag_dict
 
-def map_text_note(event: Event, job_id: int) -> TextNote:
+def map_text_note(event: Event, job_id: int) -> DBEvent:
     """
         TODO return a type that can be 
         directly injected into the DB
     """
-    return TextNote(
+    return DBEvent(
         event=EventKind.TEXT_NOTE,
         job_id=job_id,
     )
 
-def get_text_note(id: int) -> TextNote:
+def get_text_note(id: int) -> DBEvent:
     pass
 # def _convert_raw(event: list) -> Event:
 #     if event[0] == "EVENT":
