@@ -1,5 +1,6 @@
 import uuid
-from utils import new_subscription_id
+from utils import new_subscription_id, new_job_id, new_batch_id
+from services.db import DBService
 from services.mappers.events.text_note import handle_text_note_bulk
 import tornado.ioloop
 from tornado import gen
@@ -15,21 +16,24 @@ from pynostr.message_pool import MessagePool
 RELAY_URL = "wss://relay.damus.io"
 TIMEOUT = 300
 LIMIT = 5000
-def _run_process(
-        relay: Relay, 
+JOB_ID = new_job_id()
+
+def _run(
+        relay: Relay,
+        db: DBService,
         msg_pool: MessagePool, 
-        io_loop: tornado.ioloop.IOLoop
+        io_loop: tornado.ioloop.IOLoop,
     ) -> list:
-    # Store Events
-    events = []
     try:
         io_loop.run_sync(relay.connect)
     except gen.Return:
         # TODO What is going on here?
         pass
     io_loop.stop()
+
     # Check for EOSE - Just exploring this
     while msg_pool.has_eose_notices():
+        # TODO Handle EOSE
         eose = msg_pool.get_all_eose()
         print(eose[0])
     # Check for notices
@@ -39,44 +43,12 @@ def _run_process(
         print(f"NOTICE RECEIVED: {notice.content}")
     # Handle Events
     events = msg_pool.get_all_events()
-    transformed = handle_text_note_bulk([event.event for event in events])
-    # while msg_pool.has_events():
-    #     msg = msg_pool.get_event()
-    #     events.append(msg)
-    #     print(f"EVENT SEEN: {msg.event.content}")
-    # post_process_events = msg_pool.get_all_events()
+    transformed = handle_text_note_bulk([event.event for event in events], JOB_ID)
     # Finish
-    print(f"Last event: ", events[-1])    
+    db.write(transformed)    
 
-def skeleton_process():
-    message_pool = MessagePool(first_response_only=False)
-    policy = RelayPolicy()
-    io_loop = tornado.ioloop.IOLoop.current()
-    # Relay
-    r = Relay(
-        RELAY_URL,
-        message_pool,
-        io_loop,
-        policy,
-        timeout=TIMEOUT
-    )
-    # Filters List    
-    filters = FiltersList(
-        [
-            Filters(
-                kinds=[EventKind.TEXT_NOTE],
-                limit=3,
-            )
-        ]
-    )
-    # Subscription
-    subscription_id = new_subscription_id()
-    r.add_subscription(subscription_id, filters)
-    _run_process(
-        relay=r,
-        msg_pool=message_pool,
-        io_loop=io_loop
-    )
+
+
 # Utils - Scratch for now
 def _create_filters_list(
         ids: Optional[list] = [],

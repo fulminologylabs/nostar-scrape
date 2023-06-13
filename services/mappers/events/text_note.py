@@ -51,10 +51,22 @@ def map_text_note(event: Event, job_id: int) -> DBEvent:
         TODO return a type that can be 
         directly injected into the DB
     """
-    return DBEvent(
-        event=EventKind.TEXT_NOTE,
-        job_id=job_id,
-    )
+    try:
+        return DBEvent(
+            id=event.id,
+            event_kind_id=event.kind,
+            job_id=job_id,
+            content=event.content, # TODO will have to change this type eventually
+            tags=tag_to_dict(event.tags),
+            pubkey=event.pubkey,
+            created_at=event.created_at,
+            signature=event.sig
+        )
+    except Exception as e:
+        # TODO Error handling
+        # TODO Logging
+        print(f"Failed to map Text Note Event to DB Event Obj with error: {e}")
+        raise e
 
 def get_text_note(id: int) -> DBEvent:
     pass
@@ -77,7 +89,7 @@ def get_text_note(id: int) -> DBEvent:
 #     else:
 #         raise ValueError("This is not a Nostr Event.")
     
-def handle_text_note_bulk(events: list) -> list[Event]:
+def handle_text_note_bulk(events: list, job_id: int) -> list[Event]:
     """
         TODO implement
         - takes in a text note event list
@@ -87,7 +99,7 @@ def handle_text_note_bulk(events: list) -> list[Event]:
     """
     try:
         return [
-            _convert_raw(evt) for evt in events
+            map_text_note(evt, job_id) for evt in events
         ]
     except Exception as e:
         # TODO error handling
@@ -97,7 +109,7 @@ def handle_text_note_bulk(events: list) -> list[Event]:
         )
         raise e
 
-def handle_text_note(event: list) -> Event:
+def handle_text_note(event: list, job_id: int) -> Event:
     """
         TODO IMPLEMENT  
         -   Takes in a text note event and
@@ -105,7 +117,7 @@ def handle_text_note(event: list) -> Event:
             to our DB models
     """
     try:
-        return _convert_raw(event)
+        return map_text_note(event, job_id)
     except Exception as e:
         # TODO error handling
         print(

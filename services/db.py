@@ -12,8 +12,9 @@ class DBService:
         #load_environment_variables()
         #self._db_uri = get_db_uri(with_driver=True)
         self._engine = engine
-    
-    def db_read(self):
+        self._bulk_limit = 1000
+
+    def read(self):
         """ See: https://docs.sqlalchemy.org/en/20/orm/session_basics.html#querying
             TODO
             Takes SQL or is designed specifically for a recognized query pattern in the application
@@ -22,14 +23,28 @@ class DBService:
         """
         pass
 
-    def db_write(self, db_objs: list):
+    def write(self, db_objs: list):
         """
             Attempting cleaner version of _db_write
         """
+        # if len(db_objs) > self._bulk_limit:
+        #     # TODO create a bulk condition that indicates
+        #     # the need to make explicit session.flush() calls.
+        #     # Consider breaking db_objs into sets of at-most 1000 items
+        #     # and then calling session.add_all() and session.flush() for every
+        #     # list of at-most 1000 items contained in db_objs
+        #     batches = [
+        #         db_objs[i * self._bulk_limit:(i + 1) * self._bulk_limit] for i \
+        #         in range((len(db_objs) + self._bulk_limit - 1) // self._bulk_limit)
+        #     ]
         with Session.begin() as session:
             try:
                 # Add all in bulk TODO explore pros/cons again
                 session.add_all(db_objs)
+                # Batch and Single Batch logic
+                # for batch in batches:
+                #     session.add_all(batch)
+                #     session.flush()   
             except Exception as e:
                 # TODO Error handling
                 session.rollback()

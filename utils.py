@@ -8,6 +8,23 @@ from constants import MS_MULTIPLE, HR, DAY, MIN, EPOCH_START
 def new_subscription_id() -> str:
     return uuid.uuid1().hex
 
+def new_job_id() -> uuid.UUID:
+    """
+        For creating Job ID
+    """
+    return uuid.uuid4()
+
+def new_batch_id(job_id: uuid.UUID) -> uuid.UUID:
+    """
+        For creating batch IDs
+
+        TODO
+        Should we factor in the job ID as a prefix
+        to represent the one-to-many relationship
+        between a job and a batch?
+    """
+    return uuid.uuid4()
+
 def load_environment_variables() -> None:
     """
         Loads environment variables set in .env

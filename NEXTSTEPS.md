@@ -8,19 +8,22 @@
     - Read: https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#basic-relationship-patterns
     - Transitions TextNote Table, Model, Alembic code to Event table
     - Transition EventKind PK to not be AUTO INCREMENT
-
     - Read about SQLAlchemy ORM: https://docs.sqlalchemy.org/en/20/orm/
     - Read about SQLAlchemy Integration with dataclasses: https://docs.sqlalchemy.org/en/20/orm/dataclasses.html
+    *** BOOKMARK
+    - For Models and Alembic - Determine whether to use server_default or default
+    - Pre-populate some data (within pipeline)
+    - Read enough information from DB to setup examples/historical v0.1 process
+    - Explore Status ideas for batches / jobs
+    - Test downgrade
+    - Establish DB Connection code for the application itself (https://testdriven.io/blog/fastapi-sqlmodel/)
     - Read about Tornado and explore Async options
     - Read: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
     - Determine what type to use for `content` on the Event table
-
-    - Pre-populate some data (within pipeline)
-    - Test downgrade
-    - Establish DB Connection code for the application itself (https://testdriven.io/blog/fastapi-sqlmodel/)
     - Upgrade SQLModel and Alebmic to use async code (https://alembic.sqlalchemy.org/en/latest/cookbook.html)
 
 4. Write the daily and onboard processes for the scheduler
 5. Fix tests
 6. Write Relays, Relay Configs, Job Config, Filter Config, Subscription Record Database
 7. Logging system
+8. Setup equivalent to the Rust CI/CD Pipeline
