@@ -32,6 +32,7 @@ def upgrade() -> None:
     op.create_table(
         'relay_config',
         sa.Column('relay_id', sa.Integer, sa.ForeignKey('relay.id', onupdate="CASCADE", ondelete="CASCADE"), primary_key=True, autoincrement='ignore_fk'),
+        # TODO Be careful with this default - may need to change to server_default w/ scalar somehow
         sa.Column('epoch_start', sa.DateTime, default=default_epoch_start),
         sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
     )
