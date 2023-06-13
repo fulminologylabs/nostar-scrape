@@ -5,12 +5,9 @@ Revises:
 Create Date: 2023-05-20 18:03:57.640076
 
 """
-import uuid
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.sql.expression import func
-from sqlalchemy.dialects.postgresql import UUID
-from utils import default_relay_config_epoch_start
+from app.utils import default_relay_config_epoch_start
 # revision identifiers, used by Alembic.
 revision = '02a52963a48c'
 down_revision = None

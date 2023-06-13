@@ -1,4 +1,4 @@
-from utils import new_subscription_id, new_job_id, new_batch_id
+from app.utils import new_subscription_id, new_job_id, new_batch_id
 from services.db import DBService
 import tornado.ioloop
 from tornado import gen

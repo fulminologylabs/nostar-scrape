@@ -47,8 +47,6 @@ def _run(
     # Finish
     db.write(transformed)    
 
-
-
 # Utils - Scratch for now
 def _create_filters_list(
         ids: Optional[list] = [],

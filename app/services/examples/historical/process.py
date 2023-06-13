@@ -1,4 +1,4 @@
-from utils import new_subscription_id, new_job_id
+from app.utils import new_subscription_id, new_job_id
 from services.db import DBService
 from services.examples.historical.runner import _run
 import tornado.ioloop
