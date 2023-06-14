@@ -1,5 +1,5 @@
 from repository.models import Relay, Base, RelayConfig, Job, \
-    Batch, JobType, EventKind, TextNote, Filter, Subscription
+    Batch, JobType, EventKind, Filter, Subscription, Event
 from repository.connection import engine, Session
 from utils import load_environment_variables, get_db_uri
 from sqlalchemy.orm import Session as _Session

@@ -45,9 +45,8 @@ def start():
             # Example Filter
             Filters(
                 kinds=[EventKind.TEXT_NOTE],
-                limit=3,
-                since=SINCE,
-                until=UNTIL,
+                limit=500,
+                event_refs=['f469bccdccc653489c492450cef005f466cd885b00f504597b95447e412318e2']
             )
         ]
     )
@@ -74,6 +73,8 @@ def start():
         events_seen += 1
         events.append(event_msg.event)
         print(event_msg.event.content)
+        if event_msg.event.tags:
+            print(f"TAGS SEEN: {event_msg.event.tags}")
     while message_pool.has_counts():
         print(f"WE RECEIVED A COUNT RELAY MESSAGE: {message_pool.get_count()}")
 
