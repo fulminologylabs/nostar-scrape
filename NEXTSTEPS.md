@@ -10,9 +10,11 @@
     - Transition EventKind PK to not be AUTO INCREMENT
     - Read about SQLAlchemy ORM: https://docs.sqlalchemy.org/en/20/orm/
     - Read about SQLAlchemy Integration with dataclasses: https://docs.sqlalchemy.org/en/20/orm/dataclasses.html
-    *** BOOKMARK
     - For Models and Alembic - Determine whether to use server_default or default
-    - Pre-populate some data (within pipeline)
+    *** BOOKMARK
+
+    - Pre-populate some data (within pipeline) based on filter_handler and job_manager
+    - Fill out and create tests for filter_handler and job_manager
     - Read enough information from DB to setup examples/historical v0.1 process
     - Explore Status ideas for batches / jobs
     - Test downgrade

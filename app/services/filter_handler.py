@@ -71,3 +71,9 @@ class FilterHandler:
         """
         pass
 
+    def derive_subscriptions(self) -> list:
+        """ STEP FOUR
+            Create subscriptions for each filter
+        """
+        pass
+
