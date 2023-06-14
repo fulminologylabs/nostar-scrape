@@ -3,7 +3,7 @@ import uuid
 from dotenv import load_dotenv
 from dateutil.parser import parse
 from datetime import datetime, time, timedelta, timezone
-from app.constants import MS_MULTIPLE, HR, DAY, MIN, EPOCH_START
+from constants import MS_MULTIPLE, HR, DAY, MIN, EPOCH_START
 
 def new_subscription_id() -> str:
     return uuid.uuid1().hex

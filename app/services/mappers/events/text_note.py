@@ -70,6 +70,8 @@ def map_text_note(event: Event, job_id: int) -> DBEvent:
 
 def get_text_note(id: int) -> DBEvent:
     pass
+
+# TODO this could be relelvant to testing code stil
 # def _convert_raw(event: list) -> Event:
 #     if event[0] == "EVENT":
 #         t_event = from_dict(

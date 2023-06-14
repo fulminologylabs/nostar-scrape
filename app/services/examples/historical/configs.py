@@ -1,5 +1,6 @@
 from datetime import datetime
 from pynostr.event import EventKind
+from pynostr.filters import Filters, FiltersList
 
 LIMIT = 3
 
@@ -28,3 +29,53 @@ CONFIG = {
     "filters": [FILTER_TEMPLATE],
     "timeout": TIMEOUT,
 }
+
+"""     
+    filters = FiltersList(
+        [
+            # Example Filter
+            Filters(
+                kinds=[EventKind.TEXT_NOTE],
+                limit=3
+                # since=SINCE,
+                # until=UNTIL,
+            )
+        ]
+    ) 
+"""
+
+class FilterHandler:
+    def __init__(
+            self, 
+            job_type: int, 
+            relay_config: dict, 
+            filter_template: dict
+        ):
+        self._job_type = job_type
+        self.relay_config = relay_config
+        self.filter_template = filter_template
+
+    def configure_template(self) -> Filters:
+        """ STEP ONE
+            Apply Relay preferences from RelayConfig
+        """
+        pass
+
+    def _get_date_range_for_job(self) -> list:
+        """ STEP TWO
+            Depending on the job_type, derive a list of subject
+            datetime objects that are subject for scraping, for a given relay
+        """
+        pass
+
+    def derive_daily_filters(self) -> FiltersList:
+        """ STEP THREE
+            Given a template configured for individual relay configs and
+            a single date, derive a FiltersList that use the `since` and 
+            `until` params on the filter to walk the Relay's history for the
+            date
+        """
+        pass
+
+
+

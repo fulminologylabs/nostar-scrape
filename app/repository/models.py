@@ -1,4 +1,4 @@
-import uuid
+from __future__ import annotations
 from typing import Any, List
 from datetime import datetime
 from sqlalchemy import func, ForeignKey, text
@@ -30,7 +30,7 @@ class Relay(Base):
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at : Mapped[datetime] = mapped_column(index=True, server_onupdate=func.current_timestamp())
     # Relationships
-    relay_config : Mapped["RelayConfig" | None] = relationship(back_populates="relay")
+    relay_config : Mapped[RelayConfig | None] = relationship(back_populates="relay")
 
 
 class RelayConfig(Base):
@@ -40,7 +40,7 @@ class RelayConfig(Base):
     epoch_start : Mapped[datetime] = mapped_column(default=default_epoch_relay_config)
     updated_at  : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
     # Relationships
-    relay       : Mapped["Relay"] = relationship(back_populates="relay_config")
+    relay       : Mapped[Relay] = relationship(back_populates="relay_config")
 
 
 class Filter(Base):
@@ -70,8 +70,8 @@ class Batch(Base):
     created_at   : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at   : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
     # Relationships
-    status : Mapped["BatchStatus"] = relationship()
-    job    : Mapped["Job"] = relationship(back_populates="batch")
+    status : Mapped[BatchStatus] = relationship()
+    job    : Mapped[Job] = relationship(back_populates="batch")
 
 
 class BatchStatus(Base):
@@ -103,11 +103,11 @@ class Job(Base):
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())    
     # Relationships
-    relay         : Mapped["Relay"] = relationship()
-    filter        : Mapped["Filter"] = relationship()
-    batch         : Mapped[List["Batch"]] = relationship(back_populates="job")
-    job_name      : Mapped["JobType"] = relationship()    
-    subscriptions : Mapped[List["Subscription"]] = relationship(back_populates="job")
+    relay         : Mapped[Relay] = relationship()
+    filter        : Mapped[Filter] = relationship()
+    batch         : Mapped[List[Batch]] = relationship(back_populates="job")
+    job_name      : Mapped[JobType] = relationship()    
+    subscriptions : Mapped[List[Subscription]] = relationship(back_populates="job")
 
 
 class Subscription(Base):
@@ -120,7 +120,7 @@ class Subscription(Base):
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp()) 
     # Relationships
-    job        : Mapped["Job" | None] = relationship(back_populates="subs")
+    job        : Mapped[Job | None] = relationship(back_populates="subs")
 
 
 class Event(Base):
@@ -136,6 +136,6 @@ class Event(Base):
     inserted_at   : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at    : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())     
     # Relationships
-    event_kind: Mapped["EventKind"] = relationship()
-    job        : Mapped["Job"] = relationship()
+    event_kind: Mapped[EventKind] = relationship()
+    job        : Mapped[Job] = relationship()
 

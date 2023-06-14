@@ -45,9 +45,9 @@ def start():
             # Example Filter
             Filters(
                 kinds=[EventKind.TEXT_NOTE],
-                limit=3
-                # since=SINCE,
-                # until=UNTIL,
+                limit=3,
+                since=SINCE,
+                until=UNTIL,
             )
         ]
     )
