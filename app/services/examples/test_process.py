@@ -45,7 +45,7 @@ def _run(
     events = msg_pool.get_all_events()
     transformed = handle_text_note_bulk([event.event for event in events], JOB_ID)
     # Finish
-    db.write(transformed)    
+    #db.write(transformed)    
 
 # Utils - Scratch for now
 def _create_filters_list(
@@ -61,7 +61,8 @@ def _create_filters_list(
 
         Individual filters are created via index position
     """
-    zipped = zip(kinds, limit, since, until)
+    zipped = zip(ids, pubkeys, kinds, limit, since, until)
+    return zipped
 
 def _create_filter_from_filters_list_zip(zipped_filters: list) -> FiltersList:
     return []

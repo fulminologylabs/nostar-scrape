@@ -27,3 +27,4 @@
 6. Write Relays, Relay Configs, Job Config, Filter Config, Subscription Record Database
 7. Logging system
 8. Setup equivalent to the Rust CI/CD Pipeline
+    - Is there a way to include DB migrations in CI/CD?

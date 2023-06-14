@@ -35,4 +35,4 @@ def _run(
     events = msg_pool.get_all_events()
     transformed = handle_text_note_bulk([event.event for event in events], JOB_ID)
     # Finish
-    db.write(transformed)    
+    #db.write(transformed)    

@@ -1,6 +1,7 @@
 from app.utils import new_subscription_id, new_job_id
 from services.db import DBService
 from services.examples.historical.runner import _run
+from services.examples.historical.configs import CONFIG
 import tornado.ioloop
 from pynostr.relay import Relay
 from pynostr.filters import FiltersList, Filters
@@ -10,7 +11,7 @@ from pynostr.message_pool import MessagePool
 # TODO Are subscriptions being closed properly?
 RELAY_URL = "wss://relay.damus.io"
 TIMEOUT = 300
-LIMIT = 5000
+LIMIT = 5
 JOB_ID = new_job_id()
 
 def skeleton_process():
@@ -46,3 +47,6 @@ def skeleton_process():
         msg_pool=message_pool,
         io_loop=io_loop
     )
+
+if __name__ == "__main__":
+    skeleton_process()
