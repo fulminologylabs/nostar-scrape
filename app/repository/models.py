@@ -1,6 +1,7 @@
 from __future__ import annotations
-from typing import Any, List
+from typing import List
 from datetime import datetime
+from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy import func, ForeignKey, text, JSON
 from sqlalchemy.types import JSON, DateTime
 from utils import default_relay_config_epoch_start
@@ -8,17 +9,15 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 # Epoch start
 default_epoch_relay_config = default_relay_config_epoch_start()
-# Type Alias for Mapping Postgres JSON to Python Dict
-dict_from_json = dict[str, Any]
 
 class Base(DeclarativeBase):
     """
         DB Base Class
     """
     type_annotation_map = {
-        dict: JSON,
-        datetime: DateTime(),
-        int: UUID(),
+        dict: JSON, # replaced with MutableDict use
+        datetime: DateTime,
+        int: UUID,
     }
 
 # Tables
@@ -46,7 +45,7 @@ class RelayConfig(Base):
 class Filter(Base):
     __tablename__ = "filter"
     id          : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    json        : Mapped[dict] = mapped_column(nullable=False)
+    json        : Mapped[MutableDict.as_mutable(JSON)] = mapped_column(nullable=False)
     name        : Mapped[str | None] = mapped_column(nullable=True, unique=True)
     created_at  : Mapped[datetime] = mapped_column(server_default=func.current_timestamp())
     updated_at  : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
@@ -105,9 +104,9 @@ class Job(Base):
     # Relationships
     relay         : Mapped[Relay] = relationship()
     filter        : Mapped[Filter] = relationship()
-    batch         : Mapped[List[Batch]] = relationship(back_populates="job")
+    batch         : Mapped[List[Batch] | None] = relationship(back_populates="job")
     job_name      : Mapped[JobType] = relationship()    
-    subscriptions : Mapped[List[Subscription]] = relationship(back_populates="job")
+    subscriptions : Mapped[List[Subscription] | None] = relationship(back_populates="job")
 
 
 class Subscription(Base):
@@ -129,7 +128,7 @@ class Event(Base):
     event_kind_id : Mapped[int] = mapped_column(ForeignKey("event_kind.event_id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     job_id        : Mapped[int] = mapped_column(ForeignKey("job.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     content       : Mapped[str] = mapped_column(nullable=False)
-    tags          : Mapped[dict | None] = mapped_column(nullable=True)
+    tags          : Mapped[MutableDict.as_mutable(JSON) | None] = mapped_column(nullable=True)
     pubkey        : Mapped[str] = mapped_column(nullable=False)
     created_at    : Mapped[int] = mapped_column(nullable=False)
     signature     : Mapped[str] = mapped_column(nullable=False)

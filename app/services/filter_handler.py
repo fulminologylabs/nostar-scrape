@@ -38,6 +38,8 @@ FILTER_TEMPLATE = {
 
 class FilterHandler:
     """
+        Always expect to append limit, since, and until params
+        to the filter template at least.
     """
     def __init__(
             self, 
