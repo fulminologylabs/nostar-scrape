@@ -5,6 +5,7 @@ Revises: 02a52963a48c
 Create Date: 2023-06-13 07:48:11.671245
 
 """
+import json
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy import String
@@ -55,13 +56,17 @@ def upgrade() -> None:
         # See here: https://www.commandprompt.com/education/postgresql-to_timestamp-function-with-examples/
         op.execute(
             f"INSERT INTO relay_config (relay_id, epoch_start)\
-            VALUES ({idx + 1}, TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS'));" % epoch_start
+            VALUES ({idx+1}, TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS'));" % epoch_start
         )
     # Filters
-    #for idx, filter in enumerate(STARTER_FILTERS):
-    #    op.execute()
+    for _, filter in enumerate(STARTER_FILTERS):
+        op.execute(f"INSERT INTO filter (json, name) VALUES ('{json.dumps(filter)}', '{filter['name']}')")
 
 def downgrade() -> None:
+    # Drop Relay and Relay Config
     for idx, _ in enumerate(STARTER_RELAYS):
         op.execute(f"DELETE FROM relay_config WHERE relay_id = {idx+1};")
         op.execute(f"DELETE FROM relay WHERE id = {idx + 1};")
+    # Drop Filter
+    for idx, _ in enumerate(STARTER_FILTERS):
+        op.execute(f"DELETE FROM filter WHERE id = {idx + 1};")
