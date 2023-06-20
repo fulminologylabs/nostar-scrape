@@ -59,20 +59,6 @@ class EventKind(Base):
     updated_at  : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
 
 
-# class Batch(Base):
-#     __tablename__ = "batch"
-#     batch_id        : Mapped[int]      = mapped_column(primary_key=True, server_default=text("gen_random_uuid()"))
-#     subscription_id : Mapped[int]      = mapped_column(ForeignKey("subscription.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
-#     starts_at       : Mapped[datetime] = mapped_column(index=True, nullable=False)
-#     completed_at    : Mapped[datetime] = mapped_column(index=True, nullable=True)
-#     status_id       : Mapped[int]      = mapped_column(ForeignKey("batch_status.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
-#     created_at      : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
-#     updated_at      : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
-#     # Relationships
-#     status : Mapped[BatchStatus] = relationship()
-#     job    : Mapped[Job] = relationship(back_populates="batch")
-
-
 class SubscriptionStatus(Base):
     __tablename__ = "subscription_status"
     id          : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
