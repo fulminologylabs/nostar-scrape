@@ -1,5 +1,6 @@
 from datetime import datetime
 from pynostr.event import EventKind
+from app.services.job_manager import JobManager
 from app.repository.models import Filter, Relay, Job
 from pynostr.filters import Filters, FiltersList
 
@@ -36,7 +37,7 @@ FILTER_TEMPLATE = {
     ) 
 """
 
-class FilterHandler:
+class FilterManager:
     """
         Always expect to append limit, since, and until params
         to the filter template at least.
@@ -47,7 +48,7 @@ class FilterHandler:
             relay: Relay, 
             filter_template: Filter
         ):
-        self._job_type = job.job_type
+        self.job_manager = JobManager(job_template=job)
         self.relay_config = relay.relay_config
         self.filter_template = filter_template.json
 

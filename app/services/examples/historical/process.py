@@ -16,7 +16,7 @@ JOB_ID = new_job_id()
 
 def skeleton_process(config):
     # TODO Write to DB as final step
-    #db = DBService()
+    db = DBService()
     # TODO Create Time-Based Batches
     # TODO Read Job, Relay, RelayConfig, Filter, Subscription Data from DB
     message_pool = MessagePool(first_response_only=False)
@@ -31,14 +31,14 @@ def skeleton_process(config):
         timeout=TIMEOUT
     )
     # TODO get from DB (Job) Filters List    
-    # filters = FiltersList(
-    #     [
-    #         Filters(
-    #             kinds=[EventKind.TEXT_NOTE],
-    #             limit=3,
-    #         )
-    #     ]
-    # )
+    filters = FiltersList(
+        [
+            Filters(
+                kinds=[EventKind.TEXT_NOTE],
+                limit=3,
+            )
+        ]
+    )
     #filters = 
     # TODO create from DB Subscription
     subscription_id = new_subscription_id()

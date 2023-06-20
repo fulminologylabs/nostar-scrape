@@ -59,22 +59,22 @@ class EventKind(Base):
     updated_at  : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
 
 
-class Batch(Base):
-    __tablename__ = "batch"
-    batch_id     : Mapped[int]      = mapped_column(primary_key=True, server_default=text("gen_random_uuid()"))
-    job_id       : Mapped[int]      = mapped_column(ForeignKey("job.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
-    starts_at    : Mapped[datetime] = mapped_column(index=True, nullable=False)
-    completed_at : Mapped[datetime] = mapped_column(index=True, nullable=True)
-    status_id    : Mapped[int]      = mapped_column(ForeignKey("batch_status.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
-    created_at   : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
-    updated_at   : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
-    # Relationships
-    status : Mapped[BatchStatus] = relationship()
-    job    : Mapped[Job] = relationship(back_populates="batch")
+# class Batch(Base):
+#     __tablename__ = "batch"
+#     batch_id        : Mapped[int]      = mapped_column(primary_key=True, server_default=text("gen_random_uuid()"))
+#     subscription_id : Mapped[int]      = mapped_column(ForeignKey("subscription.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
+#     starts_at       : Mapped[datetime] = mapped_column(index=True, nullable=False)
+#     completed_at    : Mapped[datetime] = mapped_column(index=True, nullable=True)
+#     status_id       : Mapped[int]      = mapped_column(ForeignKey("batch_status.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
+#     created_at      : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
+#     updated_at      : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
+#     # Relationships
+#     status : Mapped[BatchStatus] = relationship()
+#     job    : Mapped[Job] = relationship(back_populates="batch")
 
 
-class BatchStatus(Base):
-    __tablename__ = "batch_status"
+class SubscriptionStatus(Base):
+    __tablename__ = "subscription_status"
     id          : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     status      : Mapped[str] = mapped_column(nullable=False)
     description : Mapped[str] = mapped_column(nullable=True)
@@ -104,7 +104,6 @@ class Job(Base):
     # Relationships
     relay         : Mapped[Relay] = relationship()
     filter        : Mapped[Filter] = relationship()
-    batch         : Mapped[List[Batch] | None] = relationship(back_populates="job")
     job_name      : Mapped[JobType] = relationship()    
     subscriptions : Mapped[List[Subscription] | None] = relationship(back_populates="job")
 
@@ -112,15 +111,17 @@ class Job(Base):
 class Subscription(Base):
     # TODO Do we need tags
     __tablename__ = "subscription"
-    id         : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    job_id     : Mapped[int] = mapped_column(ForeignKey("job.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
-    start_time : Mapped[datetime] = mapped_column(nullable=False, index=True)
-    end_time   : Mapped[datetime] = mapped_column(nullable=False, index=True)
-    created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
-    updated_at : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp()) 
+    id          : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    job_id      : Mapped[int] = mapped_column(ForeignKey("job.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
+    start_time  : Mapped[datetime] = mapped_column(nullable=False, index=True)
+    end_time    : Mapped[datetime] = mapped_column(nullable=False, index=True)
+    started_at  : Mapped[datetime] = mapped_column(nullable=True, index=True)
+    status_id   : Mapped[int] = mapped_column(ForeignKey("subscription_status.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
+    created_at  : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
+    updated_at  : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp()) 
     # Relationships
-    job        : Mapped[Job | None] = relationship(back_populates="subs")
-
+    job                 : Mapped[Job | None] = relationship(back_populates="subscriptions")
+    subscription_status : Mapped[SubscriptionStatus | None] = relationship()
 
 class Event(Base):
     __tablename__ = "event"

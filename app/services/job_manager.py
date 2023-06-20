@@ -2,13 +2,22 @@ from datetime import datetime
 from repository.models import Job
 
 class JobManager:
-    def __init__(self, job_template: Job):
+    def __init__(
+        self, 
+        job_template: Job
+    ):
         self.job_template = job_template
 
-    def pull_one_job(self, relay_id: int) -> Job:
+    def pull_one_job(
+        self, 
+        relay_id: int
+    ) -> Job:
         pass
 
-    def pull_jobs_for_date_range(self, start_bound: datetime, end_bound: datetime) -> list:
+    def pull_jobs_for_date_range(self, 
+        start_bound: datetime, 
+        end_bound: datetime
+    ) -> list:
         pass
 
     def schedule_next_daily_jobs(self) -> bool:

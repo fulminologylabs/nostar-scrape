@@ -11,8 +11,9 @@
     - Read about SQLAlchemy ORM: https://docs.sqlalchemy.org/en/20/orm/
     - Read about SQLAlchemy Integration with dataclasses: https://docs.sqlalchemy.org/en/20/orm/dataclasses.html
     - For Models and Alembic - Determine whether to use server_default or default
+    - Read: https://amercader.net/blog/beware-of-json-fields-in-sqlalchemy/    
     *** BOOKMARK ***
-    - Read: https://amercader.net/blog/beware-of-json-fields-in-sqlalchemy/
+
     - Examine relationships between job, batch, filter, subscription, and relay
     - Pre-populate some data (within pipeline) based on filter_handler and job_manager
     - Fill out and create tests for filter_handler and job_manager
