@@ -7,17 +7,14 @@ Create Date: 2023-06-13 07:48:11.671245
 """
 import json
 from alembic import op
-import sqlalchemy as sa
-from sqlalchemy import String
-from sqlalchemy.sql import table, column
 from pynostr.event import EventKind
 from app.utils import default_relay_config_epoch_start
+from migrations.utils import sql_fetch_all
 # revision identifiers, used by Alembic.
 revision = 'e862323037c5'
 down_revision = '02a52963a48c'
 branch_labels = None
 depends_on = None
-# TODO Start here: https://alembic.sqlalchemy.org/en/latest/ops.html#alembic.operations.Operations.bulk_insert
 # And create for each of the below tables:
 # Relay
 # RelayConfig
@@ -43,30 +40,67 @@ STARTER_FILTERS = [
         }
     }
 ]
-STARTER_EVENT_KINDS = [EventKind.TEXT_NOTE]
-STARTER_JOB_TYPES   = ["HIST", "DAILY",]
-STARTER_SUB_STATUS  = ["pending", "started", "failed", "completed"]
+STARTER_EVENT_KINDS = [EventKind.TEXT_NOTE,]
+STARTER_JOB_TYPES   = ["HIST", "DAILY", "REPROCESS", "DIRECT_FILL",]
+STARTER_SUB_STATUS  = [
+    ("PENDING", "Job subscriptions created and scheduled."), 
+    ("STARTED", "Job subscription is in-progress."), 
+    ("FAILED", "Job subscription errored before completion."), 
+    ("COMPLETED", "Job finished successfully."),
+]
 
+def _get_relay_ids() -> list:
+    relay_ids: list = sql_fetch_all("SELECT id FROM relay;")
+    return relay_ids
+
+def _get_filter_ids() -> list:
+    filter_ids: list = sql_fetch_all("SELECT id FROM filter;")
+    return filter_ids
 
 def upgrade() -> None:
     epoch_start = default_relay_config_epoch_start()
-    # Relay and RelayConfig
-    for idx, relay in enumerate(STARTER_RELAYS):
+    # Relay
+    for relay in STARTER_RELAYS:
         op.execute(f"INSERT INTO relay (name, url) VALUES ('{relay['name']}', '{relay['url']}');")
+    # RelayConfig
+    for id in _get_relay_ids():
         # See here: https://www.commandprompt.com/education/postgresql-to_timestamp-function-with-examples/
         op.execute(
             f"INSERT INTO relay_config (relay_id, epoch_start)\
-            VALUES ({idx+1}, TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS'));" % epoch_start
+            VALUES ({id[0]}, TO_TIMESTAMP('%s', 'YYYY-MM-DD HH24:MI:SS'));" % epoch_start
         )
     # Filters
-    for _, filter in enumerate(STARTER_FILTERS):
+    for filter in STARTER_FILTERS:
         op.execute(f"INSERT INTO filter (json, name) VALUES ('{json.dumps(filter)}', '{filter['name']}')")
+    # EventKinds
+    for kind in STARTER_EVENT_KINDS:
+        name = EventKind(kind).name
+        op.execute(f"INSERT INTO event_kind (event_id, name) VALUES ({kind.value}, '{name}');")
+    # JobType
+    for jtype in STARTER_JOB_TYPES:
+        op.execute(f"INSERT INTO job_type (type) VALUES ('{jtype}');")
+    # SubscriptionStatus
+    for status in STARTER_SUB_STATUS:
+        op.execute(f"INSERT INTO subscription_status (status, description)\
+                   VALUES ('{status[0]}', '{status[1]}');")
 
 def downgrade() -> None:
     # Drop Relay and Relay Config
-    for idx, _ in enumerate(STARTER_RELAYS):
-        op.execute(f"DELETE FROM relay_config WHERE relay_id = {idx+1};")
-        op.execute(f"DELETE FROM relay WHERE id = {idx + 1};")
+    for id in _get_relay_ids():
+        op.execute(f"DELETE FROM relay_config WHERE relay_id = {id[0]};")
+        op.execute(f"DELETE FROM relay WHERE id = {id[0]};")
     # Drop Filter
-    for idx, _ in enumerate(STARTER_FILTERS):
-        op.execute(f"DELETE FROM filter WHERE id = {idx + 1};")
+    for id in _get_filter_ids():
+        op.execute(f"DELETE FROM filter WHERE id = {id[0]};")
+    # Drop EventKinds
+    for kind in STARTER_EVENT_KINDS:
+        op.execute(f"DELETE FROM event_kind WHERE event_id = {kind.value};")
+    # Drop JobTypes
+    bulk_delete_types: str = str(STARTER_JOB_TYPES).replace("[", "").replace("]", "")
+    op.execute(
+        f"DELETE FROM job_type WHERE type IN ({bulk_delete_types});"
+    )
+    # Drop Subscription Status
+    status_names: list = [status[0] for status in STARTER_SUB_STATUS]
+    bulk_delete_status: str = str(status_names).replace("[", "").replace("]", "")
+    op.execute(f"DELETE FROM subscription_status WHERE status IN ({bulk_delete_status});")
