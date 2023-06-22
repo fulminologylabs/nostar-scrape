@@ -22,8 +22,8 @@ def upgrade() -> None:
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('name', sa.String(256), nullable=True, unique=True),
         sa.Column('url', sa.String(1200), nullable=False, unique=True),
-        sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
-        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp(), index=True)
+        sa.Column('created_at', sa.DateTime, server_default=sa.text("statement_timestamp()"), index=True),
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.text("statement_timestamp()"), index=True)
     )
     # Relay Config
     op.create_table(
@@ -31,7 +31,7 @@ def upgrade() -> None:
         sa.Column('relay_id', sa.Integer, sa.ForeignKey('relay.id', onupdate="CASCADE", ondelete="CASCADE"), primary_key=True, autoincrement='ignore_fk'),
         # TODO Be careful with this default - may need to change to server_default w/ scalar somehow
         sa.Column('epoch_start', sa.DateTime, default=default_epoch_start),
-        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.text("statement_timestamp()"))
     )
     # Filter
     op.create_table(
@@ -39,34 +39,24 @@ def upgrade() -> None:
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('name', sa.String(256), nullable=True, unique=True),
         sa.Column('json', sa.JSON, nullable=False),
-        sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp()),
-        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
+        sa.Column('created_at', sa.DateTime, server_default=sa.text("statement_timestamp()")),
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.text("statement_timestamp()"))
     )
     # Event Kind
     op.create_table(
         'event_kind',
         sa.Column('event_id', sa.Integer, primary_key=True),
         sa.Column('name', sa.String(256), nullable=True, unique=True),
-        sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
-        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
+        sa.Column('created_at', sa.DateTime, server_default=sa.text("statement_timestamp()"), index=True),
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.text("statement_timestamp()"))
     )
     # Job Type
     op.create_table(
         'job_type',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('type', sa.String(256), nullable=False, unique=True),
-        sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
-        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
-    )
-    # Job
-    op.create_table('job',
-        sa.Column('id', sa.UUID, primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column('relay_id', sa.Integer, sa.ForeignKey('relay_config.relay_id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
-        sa.Column('filter_id',sa.Integer, sa.ForeignKey('filter.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
-        sa.Column('job_type', sa.Integer, sa.ForeignKey('job_type.id', onupdate='CASCADE', ondelete='CASCADE'), index=True),
-        sa.Column('status_id', sa.Integer, sa.ForeignKey('status.id', onupdate="CASCADE", ondelete="RESTRICT"), index=True),
-        sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
-        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
+        sa.Column('created_at', sa.DateTime, server_default=sa.text("statement_timestamp()"), index=True),
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.text("statement_timestamp()"))
     )
     # Status
     op.create_table(
@@ -75,16 +65,26 @@ def upgrade() -> None:
         sa.Column('status', sa.String(256), nullable=False),
         sa.Column('description', sa.String(1028), nullable=True),
     )
+    # Job
+    op.create_table('job',
+        sa.Column('id', sa.UUID, primary_key=True, server_default=sa.text("gen_random_uuid()")),
+        sa.Column('relay_id', sa.Integer, sa.ForeignKey('relay_config.relay_id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
+        sa.Column('filter_id',sa.Integer, sa.ForeignKey('filter.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
+        sa.Column('job_type', sa.Integer, sa.ForeignKey('job_type.id', onupdate='CASCADE', ondelete='CASCADE'), index=True),
+        sa.Column('status_id', sa.Integer, sa.ForeignKey('status.id', onupdate="CASCADE", ondelete="RESTRICT"), index=True),
+        sa.Column('created_at', sa.DateTime, server_default=sa.text("statement_timestamp()"), index=True),
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.text("statement_timestamp()"))
+    )
     # Subscription
     op.create_table('subscription',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('job_id', sa.UUID, sa.ForeignKey('job.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
-        sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
+        sa.Column('created_at', sa.DateTime, server_default=sa.text("statement_timestamp()"), index=True),
         sa.Column('start_time', sa.DateTime, nullable=False, index=True),
         sa.Column('end_time', sa.DateTime, nullable=False, index=True),
         sa.Column('started_at', sa.DateTime, nullable=True, index=True),
         sa.Column('status_id', sa.Integer, sa.ForeignKey('status.id', onupdate="CASCADE", ondelete="RESTRICT"), index=True),
-        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.text("statement_timestamp()"))
     )
     # Event
     op.create_table('event',
@@ -97,8 +97,8 @@ def upgrade() -> None:
         sa.Column('content', sa.String(10485760), nullable=False),
         sa.Column('signature', sa.String(256), nullable=False),
         sa.Column('job_id', sa.UUID, sa.ForeignKey('job.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
-        sa.Column('inserted_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
-        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
+        sa.Column('inserted_at', sa.DateTime, server_default=sa.text("statement_timestamp()"), index=True),
+        sa.Column('updated_at', sa.DateTime, server_onupdate=sa.text("statement_timestamp()"))
     )
 def downgrade() -> None:
     op.drop_table('event')

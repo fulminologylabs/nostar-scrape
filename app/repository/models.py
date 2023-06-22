@@ -26,8 +26,8 @@ class Relay(Base):
     id         : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     url        : Mapped[str] = mapped_column(unique=True, index=True, nullable=False)
     name       : Mapped[str | None] = mapped_column(unique=True, index=True, nullable=True)
-    created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
-    updated_at : Mapped[datetime] = mapped_column(index=True, server_onupdate=func.current_timestamp())
+    created_at : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
+    updated_at : Mapped[datetime] = mapped_column(index=True, server_onupdate=text("statement_timestamp()"))
     # Relationships
     relay_config : Mapped[RelayConfig | None] = relationship(back_populates="relay")
 
@@ -37,7 +37,7 @@ class RelayConfig(Base):
     relay_id    : Mapped[int] = mapped_column(ForeignKey("relay.id", onupdate="CASCADE", ondelete="CASCADE"), primary_key=True, nullable=False,)
     # TODO Be careful with this default - may need to change to server_default w/ scalar somehow
     epoch_start : Mapped[datetime] = mapped_column(default=default_epoch_relay_config)
-    updated_at  : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
+    updated_at  : Mapped[datetime] = mapped_column(server_onupdate=text("statement_timestamp()"))
     # Relationships
     relay       : Mapped[Relay] = relationship(back_populates="relay_config")
 
@@ -53,16 +53,16 @@ class Filter(Base):
     id          : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     json        : Mapped[MutableDict.as_mutable(JSON)] = mapped_column(nullable=False)
     name        : Mapped[str | None] = mapped_column(nullable=True, unique=True)
-    created_at  : Mapped[datetime] = mapped_column(server_default=func.current_timestamp())
-    updated_at  : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
+    created_at  : Mapped[datetime] = mapped_column(server_default=text("statement_timestamp()"))
+    updated_at  : Mapped[datetime] = mapped_column(server_onupdate=text("statement_timestamp()"))
     
 
 class EventKind(Base):
     __tablename__ = "event_kind"
     event_id    : Mapped[int] = mapped_column(primary_key=True) # Match: https://github.com/nostr-protocol/nips#event-kinds
     name        : Mapped[str | None] = mapped_column(nullable=True, unique=True)
-    created_at  : Mapped[datetime] = mapped_column(server_default=func.current_timestamp(), index=True)
-    updated_at  : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
+    created_at  : Mapped[datetime] = mapped_column(server_default=text("statement_timestamp()"), index=True)
+    updated_at  : Mapped[datetime] = mapped_column(server_onupdate=text("statement_timestamp()"))
 
 
 class Status(Base):
@@ -76,8 +76,8 @@ class JobType(Base):
     __tablename__ = "job_type"
     id         : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     type       : Mapped[str] = mapped_column(nullable=False, unique=True)
-    created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
-    updated_at : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
+    created_at : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
+    updated_at : Mapped[datetime] = mapped_column(server_onupdate=text("statement_timestamp()"))
     # Relationships
 
 
@@ -92,8 +92,8 @@ class Job(Base):
     filter_id  : Mapped[int] = mapped_column(ForeignKey("filter.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     job_type   : Mapped[int] = mapped_column(ForeignKey("job_type.id", onupdate="CASCADE", ondelete="CASCADE"), index=True)
     status_id  : Mapped[int] = mapped_column(ForeignKey("status.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
-    created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
-    updated_at : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())    
+    created_at : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
+    updated_at : Mapped[datetime] = mapped_column(server_onupdate=text("statement_timestamp()"))    
     # Relationships
     status        : Mapped[Status | None] = relationship()
     relay_config  : Mapped[Relay] = relationship()
@@ -111,8 +111,8 @@ class Subscription(Base):
     end_time    : Mapped[datetime] = mapped_column(nullable=False, index=True)
     started_at  : Mapped[datetime] = mapped_column(nullable=True, index=True)
     status_id   : Mapped[int] = mapped_column(ForeignKey("status.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
-    created_at  : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
-    updated_at  : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp()) 
+    created_at  : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
+    updated_at  : Mapped[datetime] = mapped_column(server_onupdate=text("statement_timestamp()")) 
     # Relationships
     job                 : Mapped[Job | None] = relationship(back_populates="subscriptions")
     status              : Mapped[Status | None] = relationship()
@@ -127,8 +127,8 @@ class Event(Base):
     pubkey        : Mapped[str] = mapped_column(nullable=False)
     created_at    : Mapped[int] = mapped_column(nullable=False)
     signature     : Mapped[str] = mapped_column(nullable=False)
-    inserted_at   : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
-    updated_at    : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())     
+    inserted_at   : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
+    updated_at    : Mapped[datetime] = mapped_column(server_onupdate=text("statement_timestamp()"))     
     # Relationships
     event_kind: Mapped[EventKind] = relationship()
     job        : Mapped[Job] = relationship()

@@ -16,7 +16,7 @@
     - Pre-populate some data (within pipeline) based on filter_handler and job_manager
     *** BOOKMARK ***
 
-    
+    - FastAPI setup
     - Create CRUD strategy and implement for first involved DB tables
     - Fill out and create tests for filter_handler and job_manager
     - Read enough information from DB to setup examples/historical v0.1 process

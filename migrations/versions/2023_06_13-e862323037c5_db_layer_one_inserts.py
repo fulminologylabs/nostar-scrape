@@ -103,4 +103,4 @@ def downgrade() -> None:
     # Drop Subscription Status
     status_names: list = [status[0] for status in STARTER_SUB_STATUS]
     bulk_delete_status: str = str(status_names).replace("[", "").replace("]", "")
-    op.execute(f"DELETE FROM subscription_status WHERE status IN ({bulk_delete_status});")
+    op.execute(f"DELETE FROM status WHERE status IN ({bulk_delete_status});")
