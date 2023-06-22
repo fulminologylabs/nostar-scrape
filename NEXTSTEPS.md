@@ -13,10 +13,11 @@
     - For Models and Alembic - Determine whether to use server_default or default
     - Read: https://amercader.net/blog/beware-of-json-fields-in-sqlalchemy/  
      - Examine relationships between job, batch, filter, subscription, and relay 
+    - Pre-populate some data (within pipeline) based on filter_handler and job_manager
     *** BOOKMARK ***
 
     
-    - Pre-populate some data (within pipeline) based on filter_handler and job_manager
+    - Create CRUD strategy and implement for first involved DB tables
     - Fill out and create tests for filter_handler and job_manager
     - Read enough information from DB to setup examples/historical v0.1 process
     - Explore Status ideas for batches / jobs

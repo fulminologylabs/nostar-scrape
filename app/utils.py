@@ -31,17 +31,18 @@ def load_environment_variables() -> None:
     """
     load_dotenv()
 
-def get_db_uri(with_driver: bool = False) -> str:
+def get_db_uri(with_driver: bool = False, test: bool = False) -> str:
     """
         Prequisite call to load_environment_variables() required.
 
         returns postgres DB URI
     """
+    db_key = "DB_NAME" if not test else "TEST_DB_NAME" 
     user = os.getenv("DB_USER")
     password = os.getenv("DB_PASSWORD")
     host = os.getenv("DB_HOST")
     port = os.getenv("DB_PORT")
-    db = os.getenv("DB_NAME")
+    db = os.getenv(db_key)
     if with_driver:
         #driver = os.getenv("DB_DRIVER")
         return f"postgresql://{user}:{password}@{host}:{port}/{db}"

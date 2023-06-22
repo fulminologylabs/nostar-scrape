@@ -1,16 +1,38 @@
 from datetime import datetime
 from repository.models import Job
+from app.services.filter_manager import FilterManager
 
 class JobManager:
     def __init__(
         self, 
-        job_template: Job
+        job_template: Job,
     ):
-        self.job_template = job_template
+        """
+            Fetches the datetime and unix timestamp
+            for yesterday at midnight. Then looks for any 
+            historical or daily job that is scheduled to run
+            in the past 5 minutes.
 
-    def pull_one_job(
+            Gathers and sets information related to running
+            each job after examination.
+        """
+        self.job_template = job_template
+    
+    def _get_batch_time_range(self) -> tuple:
+        pass
+
+    def _get_jobs_batch(self, start: datetime, stop: datetime) -> list[Job]:
+        pass
+
+    def _pull_daily_job(
         self, 
         relay_id: int
+    ) -> Job:
+        pass
+    
+    def _pull_historical_job(
+            self, 
+            relay_id: int
     ) -> Job:
         pass
 
@@ -32,10 +54,19 @@ class JobManager:
     def mark_historical_job_complete(self) -> bool:
         pass
 
-    def get_job_type_by_id(self, id: int) -> str:
+    def get_job_type(self, id: int) -> str:
         pass
 
-    def register_batch(
+    def init_filter_manager(self) -> FilterManager:
+        pass
+
+    def create_filters(self) -> list:
+        pass
+
+    def create_subscriptions(self) -> list:
+        pass
+
+    def register_subscription(
             self, 
             filter_id: int, 
             subscription_id: int, 
@@ -43,5 +74,12 @@ class JobManager:
             status: str, 
             completed: datetime
     ) -> bool:
+        pass
+
+    def update_subscription_status(
+            self, 
+            status: int, 
+            sub_id: int
+        ) -> bool:
         pass
     

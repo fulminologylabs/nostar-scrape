@@ -61,15 +61,16 @@ def upgrade() -> None:
     # Job
     op.create_table('job',
         sa.Column('id', sa.UUID, primary_key=True, server_default=sa.text("gen_random_uuid()")),
-        sa.Column('relay_id', sa.Integer, sa.ForeignKey('relay.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
+        sa.Column('relay_id', sa.Integer, sa.ForeignKey('relay_config.relay_id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
         sa.Column('filter_id',sa.Integer, sa.ForeignKey('filter.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
         sa.Column('job_type', sa.Integer, sa.ForeignKey('job_type.id', onupdate='CASCADE', ondelete='CASCADE'), index=True),
+        sa.Column('status_id', sa.Integer, sa.ForeignKey('status.id', onupdate="CASCADE", ondelete="RESTRICT"), index=True),
         sa.Column('created_at', sa.DateTime, server_default=sa.func.current_timestamp(), index=True),
         sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
     )
-    # SubscriptionStatus
+    # Status
     op.create_table(
-        'subscription_status',
+        'status',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('status', sa.String(256), nullable=False),
         sa.Column('description', sa.String(1028), nullable=True),
@@ -82,7 +83,7 @@ def upgrade() -> None:
         sa.Column('start_time', sa.DateTime, nullable=False, index=True),
         sa.Column('end_time', sa.DateTime, nullable=False, index=True),
         sa.Column('started_at', sa.DateTime, nullable=True, index=True),
-        sa.Column('status_id', sa.Integer, sa.ForeignKey('subscription_status.id', onupdate="CASCADE", ondelete="RESTRICT"), index=True),
+        sa.Column('status_id', sa.Integer, sa.ForeignKey('status.id', onupdate="CASCADE", ondelete="RESTRICT"), index=True),
         sa.Column('updated_at', sa.DateTime, server_onupdate=sa.func.current_timestamp())
     )
     # Event
@@ -102,8 +103,8 @@ def upgrade() -> None:
 def downgrade() -> None:
     op.drop_table('event')
     op.drop_table('subscription')
-    op.drop_table('subscription_status')
     op.drop_table('job')
+    op.drop_table('status')
     op.drop_table('job_type')
     op.drop_table('event_kind')
     op.drop_table('filter')

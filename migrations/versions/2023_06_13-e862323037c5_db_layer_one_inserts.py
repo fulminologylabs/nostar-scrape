@@ -21,7 +21,7 @@ depends_on = None
 # Filter
 # EventKind
 # JobType
-# SubscriptionStatus
+# Status
 STARTER_RELAYS = [
     {
         "name": "Damus",
@@ -79,9 +79,9 @@ def upgrade() -> None:
     # JobType
     for jtype in STARTER_JOB_TYPES:
         op.execute(f"INSERT INTO job_type (type) VALUES ('{jtype}');")
-    # SubscriptionStatus
+    # Status
     for status in STARTER_SUB_STATUS:
-        op.execute(f"INSERT INTO subscription_status (status, description)\
+        op.execute(f"INSERT INTO status (status, description)\
                    VALUES ('{status[0]}', '{status[1]}');")
 
 def downgrade() -> None:

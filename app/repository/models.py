@@ -43,6 +43,12 @@ class RelayConfig(Base):
 
 
 class Filter(Base):
+    """
+    Think of filter json as a template.
+
+    `limit` `since` and `until` parameters need to be rotated
+    many times for each job.
+    """
     __tablename__ = "filter"
     id          : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     json        : Mapped[MutableDict.as_mutable(JSON)] = mapped_column(nullable=False)
@@ -59,8 +65,8 @@ class EventKind(Base):
     updated_at  : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())
 
 
-class SubscriptionStatus(Base):
-    __tablename__ = "subscription_status"
+class Status(Base):
+    __tablename__ = "status"
     id          : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     status      : Mapped[str] = mapped_column(nullable=False)
     description : Mapped[str] = mapped_column(nullable=True)
@@ -82,13 +88,15 @@ class Job(Base):
     """
     __tablename__ = "job"
     id         : Mapped[int] = mapped_column(primary_key=True, server_default=text("gen_random_uuid()"))
-    relay_id   : Mapped[int] = mapped_column(ForeignKey("relay.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
+    relay_id   : Mapped[int] = mapped_column(ForeignKey("relay_config.relay_id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     filter_id  : Mapped[int] = mapped_column(ForeignKey("filter.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     job_type   : Mapped[int] = mapped_column(ForeignKey("job_type.id", onupdate="CASCADE", ondelete="CASCADE"), index=True)
+    status_id  : Mapped[int] = mapped_column(ForeignKey("status.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp())    
     # Relationships
-    relay         : Mapped[Relay] = relationship()
+    status        : Mapped[Status | None] = relationship()
+    relay_config  : Mapped[Relay] = relationship()
     filter        : Mapped[Filter] = relationship()
     job_name      : Mapped[JobType] = relationship()    
     subscriptions : Mapped[List[Subscription] | None] = relationship(back_populates="job")
@@ -102,12 +110,12 @@ class Subscription(Base):
     start_time  : Mapped[datetime] = mapped_column(nullable=False, index=True)
     end_time    : Mapped[datetime] = mapped_column(nullable=False, index=True)
     started_at  : Mapped[datetime] = mapped_column(nullable=True, index=True)
-    status_id   : Mapped[int] = mapped_column(ForeignKey("subscription_status.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
+    status_id   : Mapped[int] = mapped_column(ForeignKey("status.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     created_at  : Mapped[datetime] = mapped_column(index=True, server_default=func.current_timestamp())
     updated_at  : Mapped[datetime] = mapped_column(server_onupdate=func.current_timestamp()) 
     # Relationships
     job                 : Mapped[Job | None] = relationship(back_populates="subscriptions")
-    subscription_status : Mapped[SubscriptionStatus | None] = relationship()
+    status              : Mapped[Status | None] = relationship()
 
 class Event(Base):
     __tablename__ = "event"
