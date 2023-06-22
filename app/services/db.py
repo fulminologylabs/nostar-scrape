@@ -23,9 +23,13 @@ class DBService:
         """
         pass
 
-    def write(self, db_objs: list):
+    def write(self, db_objs: list, batch: bool = False):
         """
             Attempting cleaner version of _db_write
+
+            if large batch leverage flush other
+            sqlalchemy tools to prevent lost data
+            during a long or large transaction.
         """
         # if len(db_objs) > self._bulk_limit:
         #     # TODO create a bulk condition that indicates
@@ -52,7 +56,7 @@ class DBService:
             else:
                 session.commit() # Not explicitly required; Handled by Context Manager
 
-    def _db_write(self, db_objs: list):
+    def _db_write_bulk(self, db_objs: list):
         """
             The only method that should touch session. This a more
             verbose, but clear, version of some examples here:
@@ -77,12 +81,20 @@ class DBService:
             # TODO Error handling
             raise e
 
-    def select_relay_by_id(self, relay_id: int) -> Relay:
-        sql = select(Relay).where(Relay.id == relay_id)
-        result = self.session.scalars(sql)
-        return result
-    
-    def select_all_relays(self) -> list[Relay]:
-        relays = self.session.query(Relay).all()
-        return relays
+    def _db_write_one(self, db_obj):
+        try:
+            with _Session(self._engine) as session:
+                session.begin()
+                try:
+                    session.add(db_obj)
+                except Exception as e:
+                    # TODO Handle error
+                    session.rollback()
+                    raise e
+                else:
+                    # Commit
+                    session.commit() # Not required with session manager
+        except Exception as e:
+            # TODO Error handling
+            raise e
 

@@ -16,9 +16,10 @@
     - Pre-populate some data (within pipeline) based on filter_handler and job_manager
     *** BOOKMARK ***
 
-    - FastAPI setup
-    - Create CRUD strategy and implement for first involved DB tables
-    - Fill out and create tests for filter_handler and job_manager
+    - Create CRUD strategy and implement for first involved DB tables (Admin (Relay, Relay Config), FilterManager (Subscription), JobManager (Job, potentally New Batch table))
+    - Ensure tests and fixtures work
+    - Determine a test DB setup for now
+    - Fill out and create tests for all other classes
     - Read enough information from DB to setup examples/historical v0.1 process
     - Explore Status ideas for batches / jobs
     - Test downgrade
@@ -27,6 +28,7 @@
     - Read: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
     - Determine what type to use for `content` on the Event table
     - Upgrade SQLModel and Alebmic to use async code (https://alembic.sqlalchemy.org/en/latest/cookbook.html)
+    - FastAPI for Admin and other functions
 
 4. Write the daily and onboard processes for the scheduler
 5. Fix tests
