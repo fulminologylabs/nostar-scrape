@@ -20,19 +20,28 @@ class Admin:
         name: str = None,
         epoch_start: datetime = None
     ) -> Relay:
-        relay = Admin.create_relay(name=name, url=url)
-        # Add Relay
-        self.session.add(relay)
-        self.session.flush()
-        # Refresh for ID
-        self.session.refresh(relay)
-        # Add RelayConfig
-        config = Admin.create_relay_config(relay_id=relay.id, epoch_start=epoch_start)
-        # Add Relay Config
-        self.session.add(config)
-        self.session.refresh([config, relay])
-        # Relay obj should now carry RelayConfig obj
-        return relay
+        try:
+            relay = Admin.create_relay(name=name, url=url)
+            # Add Relay
+            self.session.add(relay)
+            self.session.flush()
+            # Refresh for ID
+            self.session.refresh(relay)
+            # Add RelayConfig
+            config = Admin.create_relay_config(relay_id=relay.id, epoch_start=epoch_start)
+            # Add Relay Config
+            self.session.add(config)
+            # Refresh Objects
+            self.session.refresh(relay)
+            self.session.refresh(config) # TODO do we need this?
+            # Relay obj should now carry RelayConfig obj
+            return relay
+        except Exception as e:
+            # TODO logging
+            # TODO error handling
+            print(f"add_relay_w_config failed with error: {e}.")
+            self.session.rollback()
+        
 
 
 

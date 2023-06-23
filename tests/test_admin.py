@@ -44,24 +44,9 @@ class TestAdmin:
     ):
         pass
 
-
-"""
-        relay = Relay(
-            url=relay_url, 
-            name=relay_name
-        )
-        self.db_session.add(relay)
-        self.db_session.flush()
-        # Refresh instance
-        self.db_session.refresh(relay)
-        assert type(relay.id) == int # The first is inserted via alembic migrations
-        # Attempt RelayConfig insert
-        config = RelayConfig(
-            relay_id=relay.id,
-            epoch_start=dt_epoch_start
-        )
-        self.db_session.add(config)
-        self.db_session.flush()
-        # Refresh again
-        assert config.relay_id == relay.id
-"""
+    def test_rollback_if_exception(self, admin: Admin):
+        """
+        TODO will have to early commit to test
+        this functionality.
+        """
+        pass
