@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from utils import load_environment_variables, get_db_uri
+from app.utils import load_environment_variables, get_db_uri
 # Load Environment TODO this may be redundant
 load_environment_variables()
 # Engine

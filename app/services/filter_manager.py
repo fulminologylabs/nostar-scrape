@@ -1,6 +1,5 @@
 from datetime import datetime
 from pynostr.event import EventKind
-from app.services.job_manager import JobManager
 from app.repository.models import Filter, Relay, Job
 from pynostr.filters import Filters, FiltersList
 
@@ -48,7 +47,7 @@ class FilterManager:
             relay: Relay, 
             filter_template: Filter
         ):
-        self.job_manager = JobManager(job_template=job)
+        #self.job_manager = JobManager(job_template=job)
         self.relay_config = relay.relay_config
         self.filter_template = filter_template.json
 

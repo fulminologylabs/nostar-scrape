@@ -15,7 +15,8 @@
      - Examine relationships between job, batch, filter, subscription, and relay 
     - Pre-populate some data (within pipeline) based on filter_handler and job_manager
     *** BOOKMARK ***
-
+    - Adapt init_db.sh to spin up a test DB or create independent tests.sh script
+    
     - Create CRUD strategy and implement for first involved DB tables (Admin (Relay, Relay Config), FilterManager (Subscription), JobManager (Job, potentally New Batch table))
     - Ensure tests and fixtures work
     - Determine a test DB setup for now
@@ -36,3 +37,4 @@
 7. Logging system
 8. Setup equivalent to the Rust CI/CD Pipeline
     - Is there a way to include DB migrations in CI/CD?
+9. Tests and Test DB startup script (copy postgres data between 2 schemas; shutdown the test-db after running)

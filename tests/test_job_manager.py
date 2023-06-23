@@ -3,10 +3,10 @@ from pynostr.event import EventKind
 from pynostr.filters import Filters, FiltersList
 from app.services.job_manager import JobManager
 from app.services.filter_manager import FilterManager
-from app.repository.models import Filter, Relay, Job, Base
+#from app.repository.models import Filter, Relay, Job, Base
 
 class TestJobManager:
-    def test_init_job_manager(self, db_session):
+    def test_init_job_manager(self):
         pass
 
     def test_get_batch_time_range(self):

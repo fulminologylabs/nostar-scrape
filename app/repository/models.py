@@ -1,10 +1,10 @@
 from __future__ import annotations
 from typing import List
 from datetime import datetime
-from sqlalchemy.ext.mutable import MutableDict
-from sqlalchemy import func, ForeignKey, text, JSON
+#from sqlalchemy.ext.mutable import MutableDict # Could help with JSON types
+from sqlalchemy import ForeignKey, text, JSON
 from sqlalchemy.types import JSON, DateTime
-from utils import default_relay_config_epoch_start
+from app.utils import default_relay_config_epoch_start
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 # Epoch start
@@ -17,7 +17,7 @@ class Base(DeclarativeBase):
     type_annotation_map = {
         dict: JSON, # replaced with MutableDict use
         datetime: DateTime,
-        int: UUID,
+        #int: UUID,
     }
 
 # Tables
@@ -51,7 +51,7 @@ class Filter(Base):
     """
     __tablename__ = "filter"
     id          : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    json        : Mapped[MutableDict.as_mutable(JSON)] = mapped_column(nullable=False)
+    json        : Mapped[dict] = mapped_column(nullable=False)
     name        : Mapped[str | None] = mapped_column(nullable=True, unique=True)
     created_at  : Mapped[datetime] = mapped_column(server_default=text("statement_timestamp()"))
     updated_at  : Mapped[datetime] = mapped_column(server_onupdate=text("statement_timestamp()"))
@@ -87,7 +87,7 @@ class Job(Base):
         https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#setting-bi-directional-many-to-many
     """
     __tablename__ = "job"
-    id         : Mapped[int] = mapped_column(primary_key=True, server_default=text("gen_random_uuid()"))
+    id         : Mapped[str] = mapped_column(primary_key=True, server_default=text("gen_random_uuid()"))
     relay_id   : Mapped[int] = mapped_column(ForeignKey("relay_config.relay_id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     filter_id  : Mapped[int] = mapped_column(ForeignKey("filter.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     job_type   : Mapped[int] = mapped_column(ForeignKey("job_type.id", onupdate="CASCADE", ondelete="CASCADE"), index=True)
@@ -96,10 +96,10 @@ class Job(Base):
     updated_at : Mapped[datetime] = mapped_column(server_onupdate=text("statement_timestamp()"))    
     # Relationships
     status        : Mapped[Status | None] = relationship()
-    relay_config  : Mapped[Relay] = relationship()
+    relay_config  : Mapped[RelayConfig] = relationship()
     filter        : Mapped[Filter] = relationship()
     job_name      : Mapped[JobType] = relationship()    
-    subscriptions : Mapped[List[Subscription] | None] = relationship(back_populates="job")
+    subscriptions : Mapped[List[Subscription]] = relationship(back_populates="job")
 
 
 class Subscription(Base):
@@ -123,7 +123,7 @@ class Event(Base):
     event_kind_id : Mapped[int] = mapped_column(ForeignKey("event_kind.event_id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     job_id        : Mapped[int] = mapped_column(ForeignKey("job.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     content       : Mapped[str] = mapped_column(nullable=False)
-    tags          : Mapped[MutableDict.as_mutable(JSON) | None] = mapped_column(nullable=True)
+    tags          : Mapped[dict | None] = mapped_column(nullable=True)
     pubkey        : Mapped[str] = mapped_column(nullable=False)
     created_at    : Mapped[int] = mapped_column(nullable=False)
     signature     : Mapped[str] = mapped_column(nullable=False)

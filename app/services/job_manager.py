@@ -1,5 +1,5 @@
 from datetime import datetime
-from repository.models import Job
+from app.repository.models import Job
 from app.services.filter_manager import FilterManager
 
 class JobManager:

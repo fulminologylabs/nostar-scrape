@@ -29,7 +29,7 @@ DB_NAME="${POSTGRES_DB:=nostar}"
 TEST_DB_NAME="${TEST_DB_NAME:=nostar_test}"
 # Check if a custom post has been set otherwise,
 # default to 5430
-DB_PORT="${POSTGRES_PORT:=5430}"
+TEST_DB_PORT="${POSTGRES_PORT:=3333}"
 # Check if a custom host has been set otherwise,
 # default to localhost
 DB_HOST="${POSTGRES_HOST:=localhost}"
@@ -41,25 +41,28 @@ then
     docker run \
         -e POSTGRES_USER=${DB_USER} \
         -e POSTGRES_PASSWORD=${DB_PASSWORD} \
-        -e POSTGRES_DB=${DB_NAME} \
-        -p "${DB_PORT}":5432 \
+        -e POSTGRES_DB=${TEST_DB_NAME} \
+        -p "${TEST_DB_PORT}":5432 \
         -d postgres \
         postgres -N 1000
     #               ^ Increase max # connections for testing purposes
 fi
 # Keep pinging Postgres until it is ready to accept connections
 export PGPASSWORD="${DB_PASSWORD}"
-until psql -h "${DB_HOST}" -U "${DB_USER}" -p "${DB_PORT}" -d "postgres" -c '\q'; do
+until psql -h "${DB_HOST}" -U "${DB_USER}" -p "${TEST_DB_PORT}" -d "postgres" -c '\q'; do
     >&2 echo "Postgres is still unavailable - Sleeping..."
     sleep 1
 done
 # Ready
->&2 echo "Postgres is up and running on port ${DB_PORT}..."
+>&2 echo "Postgres is up and running on port ${TEST_DB_PORT}..."
 
 # Create - TODO ensure that the proper permissions are established
-psql -h "${DB_HOST}" -U "${DB_USER}" -p "${DB_PORT}" -tc "SELECT 1 FROM pg_database WHERE datname = '${DB_NAME}'" | \
+psql -h "${DB_HOST}" -U "${DB_USER}" -p "${TEST_DB_PORT}" -tc "SELECT 1 FROM pg_database WHERE datname = '${TEST_DB_NAME}'" | \
     grep -q 1 || \
-    psql -U "${DB_USER}" -p "${DB_PORT}" -c "CREATE DATABASE '${DB_NAME}'"
+    psql -U "${DB_USER}" -p "${TEST_DB_PORT}" -c "CREATE DATABASE '${TEST_DB_NAME}'"
 # Run Migrations
 alembic upgrade head # TODO check that this is the right alembic command to use
 >&2 echo "Postgres has been migrated... Ready to go."
+####
+# Pytest
+exec pytest

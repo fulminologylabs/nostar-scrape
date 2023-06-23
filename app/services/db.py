@@ -1,9 +1,16 @@
-from repository.models import Relay, Base, RelayConfig, Job, \
-    Batch, JobType, EventKind, Filter, Subscription, Event
-from repository.connection import engine, Session
-from utils import load_environment_variables, get_db_uri
+from app.repository.models import Relay, Base, RelayConfig, Job, \
+    JobType, EventKind, Filter, Subscription, Event
+from app.repository.connection import engine, Session, _yield_db_session
+from app.utils import load_environment_variables, get_db_uri
 from sqlalchemy.orm import Session as _Session
 from sqlalchemy import select
+
+# TODO Eventually the goal is to use this service to standardize:
+# DB inserts, updates, deletes, and selects
+# sqlalchemy session.add, session.add_all, session.commit, session.refresh,
+#            session.refresh_all, session.flush, session.rollback, session.close
+#            session.begin_nested, etc.
+
 # For help with developing new queries: https://docs.sqlalchemy.org/en/20/orm/queryguide/index.html
 # For help with updating / deleting using the DB Models see below for help:
 # https://docs.sqlalchemy.org/en/20/orm/session_state_management.html#session-expire
@@ -14,7 +21,7 @@ class DBService:
         self._engine = engine
         self._bulk_limit = 1000
 
-    def read(self):
+    def read(self, sql: str):
         """ See: https://docs.sqlalchemy.org/en/20/orm/session_basics.html#querying
             TODO
             Takes SQL or is designed specifically for a recognized query pattern in the application
