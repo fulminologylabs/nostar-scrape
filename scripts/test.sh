@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -x
 set -eo pipefail
+# Set Text Environment Mode for Alembic
+export TEST_OVERRIDE="ON"
 # Check Dependencies
 if ! [ -x "$(command -v psql)" ]; then
     echo >&2 "Error: psql is not installed."
@@ -26,10 +28,10 @@ DB_PASSWORD="${POSTGRES_PASSWORDs:=password}"
 DB_NAME="${POSTGRES_DB:=nostar}"
 # Check if a custom database name has been set, otherwise,
 # default to nostar_test
-TEST_DB_NAME="${TEST_DB_NAME:=nostar_test}"
+TEST_DB_NAME="${TEST_DB_NAME:=test_nostar}"
 # Check if a custom post has been set otherwise,
 # default to 5430
-TEST_DB_PORT="${POSTGRES_PORT:=3333}"
+TEST_DB_PORT="${TEST_DB_PORT:=3333}"
 # Check if a custom host has been set otherwise,
 # default to localhost
 DB_HOST="${POSTGRES_HOST:=localhost}"
@@ -39,6 +41,7 @@ DB_HOST="${POSTGRES_HOST:=localhost}"
 if [[ -z "${SKIP_DOCKER}" ]]
 then
     docker run \
+        --name test \
         -e POSTGRES_USER=${DB_USER} \
         -e POSTGRES_PASSWORD=${DB_PASSWORD} \
         -e POSTGRES_DB=${TEST_DB_NAME} \
@@ -65,4 +68,10 @@ alembic upgrade head # TODO check that this is the right alembic command to use
 >&2 echo "Postgres has been migrated... Ready to go."
 ####
 # Pytest
-exec pytest
+python -m pytest
+echo "TESTING COMPLETE..."
+# Cleanup
+echo "CLEANING UP."
+export TEST_OVERRIDE="OFF"
+docker stop test
+docker rm test

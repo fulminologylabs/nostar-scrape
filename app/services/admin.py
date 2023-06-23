@@ -30,7 +30,7 @@ class Admin:
         config = Admin.create_relay_config(relay_id=relay.id, epoch_start=epoch_start)
         # Add Relay Config
         self.session.add(config)
-        self.session.refresh_all([config, relay])
+        self.session.refresh([config, relay])
         # Relay obj should now carry RelayConfig obj
         return relay
 

@@ -2,7 +2,7 @@ from app.services.admin import Admin
 from app.repository.models import Relay, RelayConfig
 # Fixtures
 from tests.fixtures import db_session, relay_name, relay_url, \
-    dt_epoch_start
+    dt_epoch_start, admin
 
 class TestAdmin:
     def test_add_relay_w_config(
@@ -12,6 +12,12 @@ class TestAdmin:
         relay_name: str,
         dt_epoch_start: str,
     ):
+        # relay = admin.add_relay_w_config(
+        #     url=relay_url,
+        #     name=relay_name,
+        # )
+        # Assert
+        #assert type(relay.id) == int
         pass
 
     def test_get_relay_w_config_by_id(

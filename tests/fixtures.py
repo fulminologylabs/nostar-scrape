@@ -5,7 +5,7 @@ from datetime import datetime
 from app.services.admin import Admin
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.repository.connection import Session
+from app.repository.models import Base
 from app.utils import load_environment_variables, get_test_db_uri,\
     default_relay_config_epoch_start
 
@@ -25,7 +25,7 @@ def db_session():
     # TODO Assuming Test DB is populated by Alembic revisions
     # in CI pipeline or, using a 100% rolled-back session to the
     # actual database for the environment.
-    session = Session()
+    session = TestSession()
     yield session
     # Cleanup
     session.rollback()

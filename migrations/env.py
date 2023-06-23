@@ -1,10 +1,11 @@
+import os
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from app.utils import load_environment_variables, get_db_uri
+from app.utils import load_environment_variables, get_db_uri, get_test_db_uri
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -26,7 +27,10 @@ target_metadata = None
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 db_config = config.get_section(config.config_ini_section)
+
 db_config["sqlalchemy.url"] = get_db_uri(with_driver=True)
+if os.getenv("TEST_OVERRIDE") == "ON":
+    db_config["sqlalchemy.url"] = get_test_db_uri(with_driver=True)
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
