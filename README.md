@@ -87,16 +87,18 @@ alembic downgrade -1
 alembic upgrade +1
 ```
 ## Tests
-```
-pytest
-```
-Switch the `DB_NAME` environment variable to the value
-set to `TEST_DB_NAME` and run
-`alembic upgrade head`
+The script will start a new test docker Postgres
+container and run alembic migrations over it. Then,
+it will run pytest. Lastly, it will stop and remove 
+the docker container that was used for testing.
 
-This will spin up a test DB which will provided to the tests
-via pytest fixtures. Note, even if the environment variables
-aren't switched prior to running the test suite, the entire session will be rolled back i.e. no data will remain but the actual DB would get hit.
+The alembic configuration knows to migrate the test DB
+because of a toggled environment variable, `TEST_OVERRIDE`, that is turned ON at the start of the script and OFF at the end of the script.
+
+```
+./scripts/test.sh
+```
+
 
 ## Clear PyCache
 ```

@@ -42,15 +42,12 @@ class Admin:
             print(f"add_relay_w_config failed with error: {e}.")
             self.session.rollback()
         
-
-
-
     def add_relay_config(
         self, 
         relay_id: int, 
         epoch_start: datetime = None
     ) -> Relay:
-        pass
+        return False
 
     def update_relay(
         self, 
@@ -60,7 +57,7 @@ class Admin:
             keys on fields must be attributes of
             Relay
         """
-        pass
+        return False
 
     def update_relay_config(
         self, 
@@ -70,7 +67,7 @@ class Admin:
             keys on fields must be attributes of
             RelayConfig
         """
-        pass
+        return False
 
     def get_relay_w_config_by_id(
         self,
@@ -112,3 +109,4 @@ class Admin:
             relay_id=relay_id,
             epoch_start=epoch_start,
         )
+
