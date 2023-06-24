@@ -95,6 +95,8 @@ the docker container that was used for testing.
 The alembic configuration knows to migrate the test DB
 because of a toggled environment variable, `TEST_OVERRIDE`, that is turned ON at the start of the script and OFF at the end of the script.
 
+IF THERE IS A TEST FAILURE IN CI, EXECUTION WILL STOP AND THE CLEANUP PROCESS WILL NOT TAKE
+PLACE. It is a separate DB instance but still.
 ```
 ./scripts/test.sh
 ```

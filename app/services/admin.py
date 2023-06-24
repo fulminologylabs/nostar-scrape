@@ -1,8 +1,10 @@
 """
     Handles Relay entries, RelayConfig entries, JobType entries, Eventkind entries, and Filter entries
 """
+import copy
 from typing import List
 from datetime import datetime
+from sqlalchemy import select, update
 from app.repository.models import Relay, RelayConfig
 
 class Admin:
@@ -24,7 +26,7 @@ class Admin:
             relay = Admin.create_relay(name=name, url=url)
             # Add Relay
             self.session.add(relay)
-            self.session.flush()
+            self.session.flush() # TODO is this required prior to inserting RelayConfig?
             # Refresh for ID
             self.session.refresh(relay)
             # Add RelayConfig
@@ -35,6 +37,7 @@ class Admin:
             self.session.refresh(relay)
             self.session.refresh(config) # TODO do we need this?
             # Relay obj should now carry RelayConfig obj
+            self.session.commit()
             return relay
         except Exception as e:
             # TODO logging
@@ -51,23 +54,66 @@ class Admin:
 
     def update_relay(
         self, 
+        relay_id: int,
         fields: dict,
     ) -> Relay:
         """
             keys on fields must be attributes of
             Relay
         """
-        return False
+        try:
+            relay = self.get_relay_w_config_by_id(relay_id)
+            relay_raw = copy.deepcopy(relay.__dict__)
+            # TODO not sure why this is attached
+            del relay_raw["_sa_instance_state"]
+            # Update
+            update_raw = {**relay_raw, **fields}
+            update_raw = Relay(**update_raw)
+            # Merge and Refresh
+            val = self.session.merge(update_raw)
+            # Commit
+            self.session.commit()
+            self.session.refresh(val)
+            #return updated
+            return val
+        except Exception as e:
+            # TODO Logging
+            # TODO Error Handling
+            print(f"update_relay failed with error: {e}.")
+            self.session.rollback()
 
     def update_relay_config(
         self, 
+        relay_id: int,
         fields: dict,
     ) -> Relay:
         """
             keys on fields must be attributes of
             RelayConfig
         """
-        return False
+        try:
+            relay = self.get_relay_w_config_by_id(relay_id)
+            config = relay.relay_config
+            config_raw = copy.deepcopy(config.__dict__)
+            # TODO not sure why this is attached
+            del config_raw["_sa_instance_state"]
+            # Update
+            update_raw = {**config_raw, **fields}
+            update_raw = RelayConfig(**update_raw)
+            # Merge and Refresh
+            val = self.session.merge(update_raw)
+            # Commit
+            self.session.commit()
+            self.session.refresh(val)
+            self.session.refresh(relay) # Refresh relay as well
+            #return relay
+            return relay
+        except Exception as e:
+            # TODO Logging
+            # TODO Error Handling
+            print(f"update_relay_config failed with error: {e}.")
+            self.session.rollback()
+        
 
     def get_relay_w_config_by_id(
         self,

@@ -28,7 +28,7 @@ def db_session():
     session = TestSession()
     yield session
     # Cleanup
-    session.rollback()
+    #session.rollback()
     session.close()
 
 @pytest.fixture(scope="module")

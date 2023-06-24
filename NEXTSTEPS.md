@@ -14,16 +14,17 @@
     - Read: https://amercader.net/blog/beware-of-json-fields-in-sqlalchemy/  
      - Examine relationships between job, batch, filter, subscription, and relay 
     - Pre-populate some data (within pipeline) based on filter_handler and job_manager
-    *** BOOKMARK ***
     - Adapt init_db.sh to spin up a test DB or create independent tests.sh script
-    
-    - Create CRUD strategy and implement for first involved DB tables (Admin (Relay, Relay Config), FilterManager (Subscription), JobManager (Job, potentally New Batch table))
     - Ensure tests and fixtures work
     - Determine a test DB setup for now
+    - Create CRUD strategy and implement for first involved DB tables: Admin (Relay, Relay Config)
+    *** BOOKMARK ***
+
+    - Implement CRUD strategy for FilterManager (Subscription) and JobManager (Job, potentally New Batch table)
+
     - Fill out and create tests for all other classes
     - Read enough information from DB to setup examples/historical v0.1 process
-    - Explore Status ideas for batches / jobs
-    - Test downgrade
+
     - Establish DB Connection code for the application itself (https://testdriven.io/blog/fastapi-sqlmodel/)
     - Read about Tornado and explore Async options
     - Read: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html

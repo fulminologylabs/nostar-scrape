@@ -68,7 +68,7 @@ alembic upgrade head # TODO check that this is the right alembic command to use
 >&2 echo "Postgres has been migrated... Ready to go."
 ####
 # Pytest
-python -m pytest
+python -m pytest --maxfail 5
 echo "TESTING COMPLETE..."
 # Cleanup
 echo "CLEANING UP."
