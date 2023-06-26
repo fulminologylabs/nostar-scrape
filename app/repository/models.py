@@ -76,9 +76,11 @@ class JobType(Base):
     __tablename__ = "job_type"
     id         : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     type       : Mapped[str] = mapped_column(nullable=False, unique=True)
+    filter_id  : Mapped[int] = mapped_column(ForeignKey("filter.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
     updated_at : Mapped[datetime] = mapped_column(onupdate=text("statement_timestamp()"))
     # Relationships
+    filter = Mapped[Filter] = relationship()
 
 
 class Job(Base):
@@ -89,15 +91,14 @@ class Job(Base):
     __tablename__ = "job"
     id         : Mapped[str] = mapped_column(primary_key=True, server_default=text("gen_random_uuid()"))
     relay_id   : Mapped[int] = mapped_column(ForeignKey("relay_config.relay_id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
-    filter_id  : Mapped[int] = mapped_column(ForeignKey("filter.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     job_type   : Mapped[int] = mapped_column(ForeignKey("job_type.id", onupdate="CASCADE", ondelete="CASCADE"), index=True)
     status_id  : Mapped[int] = mapped_column(ForeignKey("status.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
+    start_time : Mapped[int] = mapped_column(nullable=False, index=True)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
     updated_at : Mapped[datetime] = mapped_column(onupdate=text("statement_timestamp()"))    
     # Relationships
     status        : Mapped[Status | None] = relationship()
     relay_config  : Mapped[RelayConfig] = relationship()
-    filter        : Mapped[Filter] = relationship()
     job_name      : Mapped[JobType] = relationship()    
     subscriptions : Mapped[List[Subscription]] = relationship(back_populates="job")
 
@@ -107,11 +108,11 @@ class Subscription(Base):
     __tablename__ = "subscription"
     id          : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     job_id      : Mapped[int] = mapped_column(ForeignKey("job.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
-    start_time  : Mapped[datetime] = mapped_column(nullable=False, index=True)
-    end_time    : Mapped[datetime] = mapped_column(nullable=False, index=True)
-    started_at  : Mapped[datetime] = mapped_column(nullable=True, index=True)
+    ended_at    : Mapped[int] = mapped_column(nullable=False, index=True)
+    started_at  : Mapped[int] = mapped_column(nullable=True, index=True)
     status_id   : Mapped[int] = mapped_column(ForeignKey("status.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     created_at  : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
+    filter_json : Mapped[dict] = mapped_column(nullable=True)
     updated_at  : Mapped[datetime] = mapped_column(onupdate=text("statement_timestamp()")) 
     # Relationships
     job                 : Mapped[Job | None] = relationship(back_populates="subscriptions")

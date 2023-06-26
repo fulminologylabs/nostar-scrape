@@ -19,4 +19,16 @@ DAY         = 60 * 60 * 24
 class SUPPORTED_TAGS(Enum):
     EVENT  = "#e"
     PUBKEY = "#p"
+
+
+class HISTORICAL_JOBS(Enum):
+    HIST_BASE_1 = "base_1"
+
+
+class DAILY_JOBS(Enum):
+    DAILY_BASE_1 = "base_1"
   
+
+# cutoff for job registration
+CUTOFF_TIMEZONE = "America/New_York" # zoneinfo.ZoneInfo param
+CUTOFF_HOUR     = 17

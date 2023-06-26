@@ -19,7 +19,7 @@
     - Determine a test DB setup for now
     - Create CRUD strategy and implement for first involved DB tables: Admin (Relay, Relay Config)
     *** BOOKMARK ***
-
+    - Finish making changes to Admin and add tests
     - Implement CRUD strategy for FilterManager (Subscription) and JobManager (Job, potentally New Batch table)
 
     - Fill out and create tests for all other classes

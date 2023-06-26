@@ -1,6 +1,7 @@
 from tests.fixtures import *
 from app.services.admin import Admin
-from app.repository.models import Relay, RelayConfig
+from app.repository.models import Relay, RelayConfig, Job
+from app.constants import CUTOFF_HOUR, CUTOFF_TIMEZONE, HISTORICAL_JOBS, DAILY_JOBS
 
 class TestAdmin:
     def test_add_relay_w_config(
@@ -71,6 +72,17 @@ class TestAdmin:
         assert updated_relay_w_config.relay_config.epoch_start == test_epoch_start
         assert updated_relay_w_config.relay_config.updated_at is not None
         admin.session.flush()
+
+    def test_schedule_valid_historical_job(
+        self,
+        admin: Admin,
+    ):
+        # Relay IDs
+        relay_ids = [1,]
+        # Job Type
+        job_type_names = [HISTORICAL_JOBS.HIST_BASE_1.value,]
+        # Pending / Scheduled Status
+        
 
     def test_rollback_if_exception(
         self, 

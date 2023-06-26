@@ -4,8 +4,11 @@
 import copy
 from typing import List
 from datetime import datetime
-from sqlalchemy import select, update
-from app.repository.models import Relay, RelayConfig
+from app.repository.models import Relay, RelayConfig, \
+    Job, Status, EventKind, JobType
+from app.constants import CUTOFF_HOUR, CUTOFF_TIMEZONE, HISTORICAL_JOBS, DAILY_JOBS
+from app.utils import historical_same_day_register_cutoff, \
+    get_last_second_of_date, get_today_raw, get_tomorrow_raw, get_yesterday_raw, convert_datetime_to_unix_ts
 
 class Admin:
     """
@@ -132,6 +135,48 @@ class Admin:
         results = []
         try:
             res = self.session.query(Relay).all()
+            results.extend(res)
+        except Exception as e:
+            # TODO error handling
+            # TODO logging
+            print(f"get_all_relay_w_config failed with exception: {e}.")
+        return results
+    
+    def schedule_historical_job(
+        self,
+        relay_id: int,
+        job_type_id: int,
+    ):
+        # Today At Midnight if, earlier than 5 PM EST
+        # Else, Tomorrow at Midnight
+        pass
+    
+    def lookup_event_kinds(self) -> List[EventKind]:
+        results = []
+        try:
+            res = self.session.query(EventKind).all()
+            results.extend(res)
+        except Exception as e:
+            # TODO error handling
+            # TODO logging
+            print(f"get_all_relay_w_config failed with exception: {e}.")
+        return results
+    
+    def lookup_job_types(self) -> List[JobType]:
+        results = []
+        try:
+            res = self.session.query(JobType).all()
+            results.extend(res)
+        except Exception as e:
+            # TODO error handling
+            # TODO logging
+            print(f"get_all_relay_w_config failed with exception: {e}.")
+        return results
+
+    def lookup_statuses(self) -> List[Status]:
+        results = []
+        try:
+            res = self.session.query(Status).all()
             results.extend(res)
         except Exception as e:
             # TODO error handling

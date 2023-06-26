@@ -1,10 +1,13 @@
 import os
 import uuid
+from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 from dateutil.parser import parse
 from datetime import datetime, time, timedelta, timezone
-from app.constants import MS_MULTIPLE, HR, DAY, MIN, EPOCH_START
-
+from app.constants import MS_MULTIPLE, HR, DAY, MIN, EPOCH_START, \
+    CUTOFF_TIMEZONE, CUTOFF_HOUR
+# TODO Write Tests on conversions and timezone handling
+# TODO Consider converting datetime.today() to: datetime.now(tzinfo=ZoneInfo(...))
 def new_subscription_id() -> str:
     return uuid.uuid1().hex
 
@@ -133,6 +136,10 @@ def get_yesterday_raw() -> datetime:
     raw = datetime.today() - timedelta(days=1)
     return datetime.combine(raw, time.min, tzinfo=timezone.utc)
 
+def get_tomorrow_raw() -> datetime:
+    raw = datetime.today() + timedelta(days=1)
+    return datetime.combine(raw, time.min, tzinfo=timezone.utc)
+
 def get_last_second_of_date(dt: datetime) -> datetime:
     """
         Get last second of datetime object passed as dt param
@@ -224,3 +231,9 @@ def date_str_to_datetime(date: str, format: str = "%m/%d/%Y") -> datetime:
         returns datetime
     """
     return datetime.strftime(date, format)
+
+
+def historical_same_day_register_cutoff() -> bool:
+    now = datetime.now(tz=ZoneInfo(CUTOFF_TIMEZONE))
+    current_hour = now.hour()
+    return current_hour >= CUTOFF_HOUR

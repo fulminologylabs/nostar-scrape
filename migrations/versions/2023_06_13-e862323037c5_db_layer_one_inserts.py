@@ -10,6 +10,7 @@ from alembic import op
 from pynostr.event import EventKind
 from app.utils import default_relay_config_epoch_start
 from migrations.utils import sql_fetch_all
+from app.constants import HISTORICAL_JOBS, DAILY_JOBS
 # revision identifiers, used by Alembic.
 revision = 'e862323037c5'
 down_revision = '02a52963a48c'
@@ -41,7 +42,11 @@ STARTER_FILTERS = [
     }
 ]
 STARTER_EVENT_KINDS = [EventKind.TEXT_NOTE,]
-STARTER_JOB_TYPES   = ["HIST", "DAILY", "REPROCESS", "DIRECT_FILL",]
+# JobTypes
+H_JOBS = [jtype.value for jtype in HISTORICAL_JOBS]
+D_JOBS = [jtype.value for jtype in DAILY_JOBS]
+STARTER_JOB_TYPES   = H_JOBS + D_JOBS
+
 STARTER_SUB_STATUS  = [
     ("PENDING", "Job subscriptions created and scheduled."), 
     ("STARTED", "Job subscription is in-progress."), 
@@ -78,7 +83,7 @@ def upgrade() -> None:
         op.execute(f"INSERT INTO event_kind (event_id, name) VALUES ({kind.value}, '{name}');")
     # JobType
     for jtype in STARTER_JOB_TYPES:
-        op.execute(f"INSERT INTO job_type (type) VALUES ('{jtype}');")
+        op.execute(f"INSERT INTO job_type (type, filter_id) VALUES ('{jtype}', 1);")
     # Status
     for status in STARTER_SUB_STATUS:
         op.execute(f"INSERT INTO status (status, description)\

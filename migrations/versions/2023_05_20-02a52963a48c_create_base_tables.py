@@ -55,6 +55,7 @@ def upgrade() -> None:
         'job_type',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('type', sa.String(256), nullable=False, unique=True),
+        sa.Column('filter_id',sa.Integer, sa.ForeignKey('filter.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
         sa.Column('created_at', sa.DateTime, server_default=sa.text("statement_timestamp()"), index=True),
         sa.Column('updated_at', sa.DateTime, onupdate=sa.text("statement_timestamp()"))
     )
@@ -69,9 +70,9 @@ def upgrade() -> None:
     op.create_table('job',
         sa.Column('id', sa.UUID, primary_key=True, server_default=sa.text("gen_random_uuid()")),
         sa.Column('relay_id', sa.Integer, sa.ForeignKey('relay_config.relay_id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
-        sa.Column('filter_id',sa.Integer, sa.ForeignKey('filter.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
         sa.Column('job_type', sa.Integer, sa.ForeignKey('job_type.id', onupdate='CASCADE', ondelete='CASCADE'), index=True),
         sa.Column('status_id', sa.Integer, sa.ForeignKey('status.id', onupdate="CASCADE", ondelete="RESTRICT"), index=True),
+        sa.Column('start_time', sa.Integer, nullable=False, index=True),
         sa.Column('created_at', sa.DateTime, server_default=sa.text("statement_timestamp()"), index=True),
         sa.Column('updated_at', sa.DateTime, onupdate=sa.text("statement_timestamp()"))
     )
@@ -80,9 +81,9 @@ def upgrade() -> None:
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('job_id', sa.UUID, sa.ForeignKey('job.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
         sa.Column('created_at', sa.DateTime, server_default=sa.text("statement_timestamp()"), index=True),
-        sa.Column('start_time', sa.DateTime, nullable=False, index=True),
-        sa.Column('end_time', sa.DateTime, nullable=False, index=True),
-        sa.Column('started_at', sa.DateTime, nullable=True, index=True),
+        sa.Column('ended_at', sa.Integer, nullable=False, index=True),
+        sa.Column('started_at', sa.Integer, nullable=True, index=True),
+        sa.Column('filter_json', sa.JSON, nullable=True),
         sa.Column('status_id', sa.Integer, sa.ForeignKey('status.id', onupdate="CASCADE", ondelete="RESTRICT"), index=True),
         sa.Column('updated_at', sa.DateTime, onupdate=sa.text("statement_timestamp()"))
     )
