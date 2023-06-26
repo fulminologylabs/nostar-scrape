@@ -6,7 +6,8 @@ from typing import List
 from datetime import datetime
 from app.repository.models import Relay, RelayConfig, \
     Job, Status, EventKind, JobType
-from app.constants import CUTOFF_HOUR, CUTOFF_TIMEZONE, HISTORICAL_JOBS, DAILY_JOBS
+from app.constants import CUTOFF_HOUR, CUTOFF_TIMEZONE, HISTORICAL_JOBS, DAILY_JOBS, \
+    JOB_STATUS
 from app.utils import historical_same_day_register_cutoff, \
     get_last_second_of_date, get_today_raw, get_tomorrow_raw, get_yesterday_raw, convert_datetime_to_unix_ts
 
@@ -53,7 +54,24 @@ class Admin:
         relay_id: int, 
         epoch_start: datetime = None
     ) -> Relay:
-        return False
+        relay = self.get_relay_w_config_by_id(relay_id)
+        config = Admin.create_relay_config(
+            relay_id,
+            epoch_start
+        )
+        try:
+            # append config to relay
+            relay.relay_config = config
+            self.session.add(relay)
+            self.session.refresh(relay)
+            # commit
+            self.session.commit()
+            return relay
+        except Exception as e:
+            # TODO logging
+            # TODO error handling
+            print(f"add_relay_config failed with error: {e}.")
+            self.session.rollback()
 
     def update_relay(
         self, 
@@ -147,9 +165,51 @@ class Admin:
         relay_id: int,
         job_type_id: int,
     ):
-        # Today At Midnight if, earlier than 5 PM EST
-        # Else, Tomorrow at Midnight
-        pass
+        try:
+            pending_status = [
+                status for status in self.lookup_statuses() \
+                if status.status == JOB_STATUS.PENDING.value
+            ][0]
+            start = Admin.register_start_time_for_historical_job()
+            job = Admin.create_job(
+                relay_id=relay_id, 
+                job_type_id=job_type_id,
+                start_time=start,
+                status_id=pending_status.id,
+            )
+            self.session.add(job)
+            self.session.refresh(job)
+            # commit
+            self.session.commit()
+            return job
+        except Exception as e:
+            # TODO Error Handling
+            # TODO Logging
+            print(f"schedule_historical_job failed with error: {e}.")
+            self.session.rollback()
+
+    @staticmethod
+    def register_start_time_for_historical_job() -> int:
+        """
+            A new historical job for a loader is scheduled
+            for the current day at midnight if earlier than 5 PM EST
+            or, tomorrow at midnight. The value returned is a unix timestamp.
+
+            When many historical jobs are scheduled for the same night,
+            additional prioritization or spacing-in-scedule logic will 
+            need to be added.
+        """
+        schedule_tonight = historical_same_day_register_cutoff()
+        if schedule_tonight:
+            today = get_today_raw()
+            midnight = get_last_second_of_date(today)
+            # schedule today
+            return convert_datetime_to_unix_ts(midnight)
+        tomorrow = get_tomorrow_raw()
+        midnight = get_last_second_of_date(tomorrow)
+        # schedule tomorrow
+        return convert_datetime_to_unix_ts(midnight)
+
     
     def lookup_event_kinds(self) -> List[EventKind]:
         results = []
@@ -199,5 +259,19 @@ class Admin:
         return RelayConfig(
             relay_id=relay_id,
             epoch_start=epoch_start,
+        )
+    
+    @staticmethod
+    def create_job(
+        relay_id: int,
+        job_type_id: int,
+        start_time: int,
+        status_id: int,
+    ) -> Job:
+        return Job(
+            relay_id=relay_id,
+            job_type=job_type_id,
+            status_id=status_id,
+            start_time=start_time,
         )
 

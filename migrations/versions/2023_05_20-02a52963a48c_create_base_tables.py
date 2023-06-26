@@ -55,6 +55,7 @@ def upgrade() -> None:
         'job_type',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('type', sa.String(256), nullable=False, unique=True),
+        sa.Column('description', sa.String(256), nullable=True, unique=False),
         sa.Column('filter_id',sa.Integer, sa.ForeignKey('filter.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
         sa.Column('created_at', sa.DateTime, server_default=sa.text("statement_timestamp()"), index=True),
         sa.Column('updated_at', sa.DateTime, onupdate=sa.text("statement_timestamp()"))

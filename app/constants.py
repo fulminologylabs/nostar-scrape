@@ -32,3 +32,10 @@ class DAILY_JOBS(Enum):
 # cutoff for job registration
 CUTOFF_TIMEZONE = "America/New_York" # zoneinfo.ZoneInfo param
 CUTOFF_HOUR     = 17
+
+class JOB_STATUS(Enum):
+    PENDING   = "PENDING"
+    STARTED   = "STARTED"
+    FAILED    = "FAILED"
+    COMPLETED = "COMPLETED"
+

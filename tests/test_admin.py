@@ -1,7 +1,8 @@
 from tests.fixtures import *
 from app.services.admin import Admin
 from app.repository.models import Relay, RelayConfig, Job
-from app.constants import CUTOFF_HOUR, CUTOFF_TIMEZONE, HISTORICAL_JOBS, DAILY_JOBS
+from app.constants import CUTOFF_HOUR, CUTOFF_TIMEZONE, HISTORICAL_JOBS, \
+    DAILY_JOBS, JOB_STATUS
 
 class TestAdmin:
     def test_add_relay_w_config(
@@ -9,7 +10,7 @@ class TestAdmin:
         admin: Admin, 
         relay_url: str,
         relay_name: str,
-        dt_epoch_start: str,
+        dt_epoch_start: datetime,
     ):
         relay = admin.add_relay_w_config(
             url=relay_url,
@@ -21,6 +22,20 @@ class TestAdmin:
         assert type(relay.relay_config) == RelayConfig
         assert relay.id == relay.relay_config.relay_id
         admin.session.flush()
+
+    def test_add_relay_config(
+        self,
+        admin: Admin,
+        dt_epoch_start: datetime,
+    ):
+        relay = admin.add_relay_config(
+            relay_id=1, 
+            epoch_start=dt_epoch_start
+        )
+        # Assert
+        assert type(relay) == Relay
+        assert type(relay.relay_config) == RelayConfig
+        assert relay.relay_config.relay_id == 1
 
     def test_get_relay_w_config_by_id(
         self, 
@@ -81,8 +96,12 @@ class TestAdmin:
         relay_ids = [1,]
         # Job Type
         job_type_names = [HISTORICAL_JOBS.HIST_BASE_1.value,]
-        # Pending / Scheduled Status
-        
+        for r_id in relay_ids:
+            job = admin.schedule_historical_job(
+                relay_id=r_id,
+                job_type_id=job
+            )
+
 
     def test_rollback_if_exception(
         self, 

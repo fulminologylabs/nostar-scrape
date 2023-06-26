@@ -83,7 +83,7 @@ def upgrade() -> None:
         op.execute(f"INSERT INTO event_kind (event_id, name) VALUES ({kind.value}, '{name}');")
     # JobType
     for jtype in STARTER_JOB_TYPES:
-        op.execute(f"INSERT INTO job_type (type, filter_id) VALUES ('{jtype}', 1);")
+        op.execute(f"INSERT INTO job_type (type, filter_id, description) VALUES ('{jtype}', 1, 'handles underlying text note events.');")
     # Status
     for status in STARTER_SUB_STATUS:
         op.execute(f"INSERT INTO status (status, description)\

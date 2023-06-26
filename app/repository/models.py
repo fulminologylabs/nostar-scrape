@@ -76,6 +76,7 @@ class JobType(Base):
     __tablename__ = "job_type"
     id         : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     type       : Mapped[str] = mapped_column(nullable=False, unique=True)
+    description: Mapped[str] = mapped_column(nullable=True)
     filter_id  : Mapped[int] = mapped_column(ForeignKey("filter.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
     updated_at : Mapped[datetime] = mapped_column(onupdate=text("statement_timestamp()"))
