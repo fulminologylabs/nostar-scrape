@@ -18,8 +18,9 @@
     - Ensure tests and fixtures work
     - Determine a test DB setup for now
     - Create CRUD strategy and implement for first involved DB tables: Admin (Relay, Relay Config)
+    - Finish making changes to Admin and add tests (add_relay_config, schedule_valid_historical_job)
     *** BOOKMARK ***
-    - Finish making changes to Admin and add tests
+
     - Implement CRUD strategy for FilterManager (Subscription) and JobManager (Job, potentally New Batch table)
 
     - Fill out and create tests for all other classes
@@ -39,3 +40,5 @@
 8. Setup equivalent to the Rust CI/CD Pipeline
     - Is there a way to include DB migrations in CI/CD?
 9. Tests and Test DB startup script (copy postgres data between 2 schemas; shutdown the test-db after running)
+10. Bash Script for tests - catch failed tests and close container
+    anyway

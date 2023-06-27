@@ -22,11 +22,11 @@ class SUPPORTED_TAGS(Enum):
 
 
 class HISTORICAL_JOBS(Enum):
-    HIST_BASE_1 = "base_1"
+    HIST_BASE_1 = "historical_base_1"
 
 
 class DAILY_JOBS(Enum):
-    DAILY_BASE_1 = "base_1"
+    DAILY_BASE_1 = "daily_base_1"
   
 
 # cutoff for job registration

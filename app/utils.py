@@ -234,6 +234,16 @@ def date_str_to_datetime(date: str, format: str = "%m/%d/%Y") -> datetime:
 
 
 def historical_same_day_register_cutoff() -> bool:
+    """
+        Returns true if the registration is before
+        the 5 PM EST Historical Job Cut-Off for the same night.
+        If false, the historical job will be scheduled tomorrow
+        at midnight.
+
+        # TODO have to review midnight scheduling when we 
+        have many historical processes being scheduled on a given
+        day.
+    """
     now = datetime.now(tz=ZoneInfo(CUTOFF_TIMEZONE))
-    current_hour = now.hour()
-    return current_hour >= CUTOFF_HOUR
+    current_hour = now.hour
+    return current_hour <= CUTOFF_HOUR

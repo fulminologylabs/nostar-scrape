@@ -35,7 +35,6 @@ class Relay(Base):
 class RelayConfig(Base):
     __tablename__ = "relay_config"
     relay_id    : Mapped[int] = mapped_column(ForeignKey("relay.id", onupdate="CASCADE", ondelete="CASCADE"), primary_key=True, nullable=False,)
-    # TODO Be careful with this default - may need to change to server_default w/ scalar somehow
     epoch_start : Mapped[datetime] = mapped_column(default=default_epoch_relay_config)
     updated_at  : Mapped[datetime] = mapped_column(onupdate=text("statement_timestamp()"))
     # Relationships
@@ -75,13 +74,13 @@ class Status(Base):
 class JobType(Base):
     __tablename__ = "job_type"
     id         : Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    type       : Mapped[str] = mapped_column(nullable=False, unique=True)
+    process    : Mapped[str] = mapped_column(nullable=False, unique=True)
     description: Mapped[str] = mapped_column(nullable=True)
     filter_id  : Mapped[int] = mapped_column(ForeignKey("filter.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
     updated_at : Mapped[datetime] = mapped_column(onupdate=text("statement_timestamp()"))
     # Relationships
-    filter = Mapped[Filter] = relationship()
+    filter: Mapped[Filter] = relationship()
 
 
 class Job(Base):
@@ -94,13 +93,13 @@ class Job(Base):
     relay_id   : Mapped[int] = mapped_column(ForeignKey("relay_config.relay_id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     job_type   : Mapped[int] = mapped_column(ForeignKey("job_type.id", onupdate="CASCADE", ondelete="CASCADE"), index=True)
     status_id  : Mapped[int] = mapped_column(ForeignKey("status.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
-    start_time : Mapped[int] = mapped_column(nullable=False, index=True)
+    start_time : Mapped[datetime] = mapped_column(nullable=False, index=True)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
     updated_at : Mapped[datetime] = mapped_column(onupdate=text("statement_timestamp()"))    
     # Relationships
-    status        : Mapped[Status | None] = relationship()
-    relay_config  : Mapped[RelayConfig] = relationship()
-    job_name      : Mapped[JobType] = relationship()    
+    status        : Mapped[Status] = relationship()
+    relay_config  : Mapped[RelayConfig] = relationship(lazy="select")
+    job_desc      : Mapped[JobType] = relationship(lazy="select")    
     subscriptions : Mapped[List[Subscription]] = relationship(back_populates="job")
 
 

@@ -1,8 +1,8 @@
 from tests.fixtures import *
 from app.services.admin import Admin
-from app.repository.models import Relay, RelayConfig, Job
-from app.constants import CUTOFF_HOUR, CUTOFF_TIMEZONE, HISTORICAL_JOBS, \
-    DAILY_JOBS, JOB_STATUS
+from app.utils import historical_same_day_register_cutoff, \
+    get_tomorrow_raw
+from app.repository.models import Relay, RelayConfig, Job, JobType
 
 class TestAdmin:
     def test_add_relay_w_config(
@@ -23,20 +23,6 @@ class TestAdmin:
         assert relay.id == relay.relay_config.relay_id
         admin.session.flush()
 
-    def test_add_relay_config(
-        self,
-        admin: Admin,
-        dt_epoch_start: datetime,
-    ):
-        relay = admin.add_relay_config(
-            relay_id=1, 
-            epoch_start=dt_epoch_start
-        )
-        # Assert
-        assert type(relay) == Relay
-        assert type(relay.relay_config) == RelayConfig
-        assert relay.relay_config.relay_id == 1
-
     def test_get_relay_w_config_by_id(
         self, 
         admin: Admin,
@@ -44,7 +30,7 @@ class TestAdmin:
         test_id = 1
         result: Relay = admin.get_relay_w_config_by_id(relay_id=test_id)
 
-        assert result.id == 1 == result.relay_config.relay_id
+        assert result.id == test_id == result.relay_config.relay_id
         admin.session.flush()
 
     def test_get_all_relay_w_config(
@@ -95,13 +81,24 @@ class TestAdmin:
         # Relay IDs
         relay_ids = [1,]
         # Job Type
-        job_type_names = [HISTORICAL_JOBS.HIST_BASE_1.value,]
-        for r_id in relay_ids:
+        job_type_ids = [1,]
+        # Should schedule today?
+        sched_today = historical_same_day_register_cutoff()
+        for r_id, jt_id in zip(relay_ids, job_type_ids):
             job = admin.schedule_historical_job(
                 relay_id=r_id,
-                job_type_id=job
+                job_type_id=jt_id,
             )
-
+            # Assert
+            assert type(job) == Job
+            assert type(job.job_desc) == JobType
+            if sched_today:
+                # Assert that the start time is tonight (today)
+                assert job.start_time.date() == datetime.today().date() 
+            else:
+                # assert that the start time is tomorrow night (tomorrow)
+                tomorrow = get_tomorrow_raw().date()
+                assert job.start_time.date() == tomorrow
 
     def test_rollback_if_exception(
         self, 

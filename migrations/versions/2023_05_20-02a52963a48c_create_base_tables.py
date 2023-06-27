@@ -54,7 +54,7 @@ def upgrade() -> None:
     op.create_table(
         'job_type',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
-        sa.Column('type', sa.String(256), nullable=False, unique=True),
+        sa.Column('process', sa.String(256), nullable=False, unique=True),
         sa.Column('description', sa.String(256), nullable=True, unique=False),
         sa.Column('filter_id',sa.Integer, sa.ForeignKey('filter.id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
         sa.Column('created_at', sa.DateTime, server_default=sa.text("statement_timestamp()"), index=True),
@@ -73,7 +73,7 @@ def upgrade() -> None:
         sa.Column('relay_id', sa.Integer, sa.ForeignKey('relay_config.relay_id', onupdate='CASCADE', ondelete='RESTRICT'), index=True),
         sa.Column('job_type', sa.Integer, sa.ForeignKey('job_type.id', onupdate='CASCADE', ondelete='CASCADE'), index=True),
         sa.Column('status_id', sa.Integer, sa.ForeignKey('status.id', onupdate="CASCADE", ondelete="RESTRICT"), index=True),
-        sa.Column('start_time', sa.Integer, nullable=False, index=True),
+        sa.Column('start_time', sa.DateTime, nullable=False, index=True),
         sa.Column('created_at', sa.DateTime, server_default=sa.text("statement_timestamp()"), index=True),
         sa.Column('updated_at', sa.DateTime, onupdate=sa.text("statement_timestamp()"))
     )
