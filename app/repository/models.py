@@ -28,7 +28,7 @@ class Relay(Base):
     name       : Mapped[str | None] = mapped_column(unique=True, index=True, nullable=True)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
     updated_at : Mapped[datetime] = mapped_column(index=True, onupdate=text("statement_timestamp()"))
-    # Relationships
+    # Relationships: https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html
     relay_config : Mapped[RelayConfig | None] = relationship(back_populates="relay")
 
 
@@ -37,7 +37,7 @@ class RelayConfig(Base):
     relay_id    : Mapped[int] = mapped_column(ForeignKey("relay.id", onupdate="CASCADE", ondelete="CASCADE"), primary_key=True, nullable=False,)
     epoch_start : Mapped[datetime] = mapped_column(default=default_epoch_relay_config)
     updated_at  : Mapped[datetime] = mapped_column(onupdate=text("statement_timestamp()"))
-    # Relationships
+    # Relationships: https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html
     relay       : Mapped[Relay] = relationship(back_populates="relay_config")
 
 
@@ -79,7 +79,7 @@ class JobType(Base):
     filter_id  : Mapped[int] = mapped_column(ForeignKey("filter.id", onupdate="CASCADE", ondelete="RESTRICT"), index=True)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
     updated_at : Mapped[datetime] = mapped_column(onupdate=text("statement_timestamp()"))
-    # Relationships
+    # Relationships: https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html
     filter: Mapped[Filter] = relationship()
 
 
@@ -96,7 +96,7 @@ class Job(Base):
     start_time : Mapped[datetime] = mapped_column(nullable=False, index=True)
     created_at : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
     updated_at : Mapped[datetime] = mapped_column(onupdate=text("statement_timestamp()"))    
-    # Relationships
+    # Relationships: https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html
     status        : Mapped[Status] = relationship()
     relay_config  : Mapped[RelayConfig] = relationship(lazy="select")
     job_desc      : Mapped[JobType] = relationship(lazy="select")    
@@ -114,7 +114,7 @@ class Subscription(Base):
     created_at  : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
     filter_json : Mapped[dict] = mapped_column(nullable=True)
     updated_at  : Mapped[datetime] = mapped_column(onupdate=text("statement_timestamp()")) 
-    # Relationships
+    # Relationships: https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html
     job                 : Mapped[Job | None] = relationship(back_populates="subscriptions")
     status              : Mapped[Status | None] = relationship()
 
@@ -130,7 +130,7 @@ class Event(Base):
     signature     : Mapped[str] = mapped_column(nullable=False)
     inserted_at   : Mapped[datetime] = mapped_column(index=True, server_default=text("statement_timestamp()"))
     updated_at    : Mapped[datetime] = mapped_column(onupdate=text("statement_timestamp()"))     
-    # Relationships
+    # Relationships: https://docs.sqlalchemy.org/en/20/orm/queryguide/relationships.html
     event_kind: Mapped[EventKind] = relationship()
     job        : Mapped[Job] = relationship()
 
