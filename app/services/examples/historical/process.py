@@ -61,6 +61,9 @@ def skeleton_process():
     # TODO create from DB Subscription
     subscription_id = new_subscription_id()
     r.add_subscription(subscription_id, filters)
+    # NOTE
+    # This function is the link between mock work of actually hitting
+    # relays and the strategic components.
     _run(
         relay=r,
         db=db,
