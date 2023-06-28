@@ -254,3 +254,9 @@ def historical_same_day_register_cutoff() -> bool:
     now = datetime.now(tz=ZoneInfo(CUTOFF_TIMEZONE))
     current_hour = now.hour
     return current_hour <= CUTOFF_HOUR
+
+def go_back_n_days_from_date(date: datetime, days: int) -> datetime:
+    return date - timedelta(days=days)
+
+def go_back_n_hours_from_date(date: datetime, hours: int) -> datetime:
+    return date - timedelta(hours=hours)

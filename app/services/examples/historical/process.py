@@ -1,5 +1,5 @@
 from app.utils import new_subscription_id, new_job_id, \
-    get_today_raw, get_first_second_of_date, \
+    get_yesterday_raw, get_first_second_of_date, \
     convert_datetime_to_unix_ts, \
     increment_ts_n_seconds
 from app.services.db import DBService
@@ -10,10 +10,10 @@ from pynostr.filters import FiltersList, Filters
 from pynostr.event import EventKind
 from pynostr.base_relay import RelayPolicy
 from pynostr.message_pool import MessagePool
-
+from datetime import timedelta
 # TODO Are subscriptions being closed properly?
-RELAY_URL = "wss://relay.damus.io"
-TIMEOUT = 300
+RELAY_URL = "wss://nostr-pub.wellorder.net"
+TIMEOUT = 30
 LIMIT = 5
 JOB_ID = new_job_id()
 
@@ -34,21 +34,32 @@ def skeleton_process():
         timeout=TIMEOUT
     )
     # Start Time from Job
-    start_time = get_first_second_of_date(get_today_raw())
+    start_time = get_first_second_of_date(
+        get_yesterday_raw() - timedelta(weeks=56)
+    )
     # Since Param of Filter
+    print(f"STARTING POINT: {start_time}")
     since_param = convert_datetime_to_unix_ts(start_time)
     # Until Param of Filter
-    until_param = increment_ts_n_seconds(since_param, seconds=60)
+    net = 60 * 60  # 1 hour
+    until_time = get_first_second_of_date(
+        get_yesterday_raw() - timedelta(days=3)
+    )
+    #until_param = increment_ts_n_seconds(since_param, seconds=net)
+    until_param = convert_datetime_to_unix_ts(until_time)
     # Limit Param of Filter
-    limit = 5000
+    print(f"{since_param} and {until_param}")
+    limit = 500
     # TODO get from DB (Job) Filters List    
     filters = FiltersList(
         [
             Filters(
                 kinds=[EventKind.TEXT_NOTE],
                 limit=limit,
-                since=since_param,
-                until=until_param,
+                #since=since_param,
+                # NOTE this with no since param
+                # works
+                until=since_param,
             )
         ]
     )
@@ -60,7 +71,7 @@ def skeleton_process():
         db=db,
         msg_pool=message_pool,
         io_loop=io_loop,
-        limit=1000,
+        limit=limit,
     )
 
 if __name__ == "__main__":

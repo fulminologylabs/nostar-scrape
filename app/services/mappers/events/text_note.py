@@ -33,16 +33,17 @@ Example Event (text_note):
     }
 ]
 """
-def tag_to_dict(e: Event) -> Optional[dict]:
+def tag_to_dict(tags: list) -> Optional[dict]:
     """
         Takes in a tag list from an Event and returns a dict
         where the Tag keys (#e, #p). See constants.SUPPORTED_TAGS
     """
-    if not e.tags:
+    if not tags:
+
         # No Tags found and it is a nullable field
         return None
     tag_dict = dict()
-    for tag in e.tags:
+    for tag in tags:
         tag_dict[tag[0]] = tag[1]
     return tag_dict
 

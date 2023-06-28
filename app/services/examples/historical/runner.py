@@ -3,6 +3,7 @@ from app.services.db import DBService
 import tornado.ioloop
 from tornado import gen
 from pynostr.relay import Relay
+from pynostr.event import Event
 from pynostr.message_pool import MessagePool
 from app.services.mappers.events.text_note import handle_text_note_bulk
 
@@ -33,7 +34,10 @@ def _run(
         # TODO Handle notice
         print(f"NOTICE RECEIVED: {notice.content}")
     # Handle Events
+    # while msg_pool.has_events():
+    #     print("has events")
     events = msg_pool.get_all_events()
+    print(f"FOUND EVENTS: {len(events)}")
     transformed = handle_text_note_bulk([event.event for event in events], JOB_ID)
     # Compare len transformed to limit
     result_size = len(transformed)
