@@ -6,7 +6,7 @@
 from typing import Optional
 from dacite import from_dict
 from pynostr.event import Event, EventKind
-from repository.models import Event as DBEvent
+from app.repository.models import Event as DBEvent
 # TODO NEXT -
 # (1) Test from_dict operation - using examples/test_process.py
 # (2) Go from dataclass to SQLAlchemy Model - using examples/test_process.py

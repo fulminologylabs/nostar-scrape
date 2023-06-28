@@ -44,38 +44,7 @@ class FilterManager:
     def __init__(
             self, 
             job: Job, 
-            relay: Relay, 
-            filter_template: Filter
+            incrementer: int,
         ):
-        #self.job_manager = JobManager(job_template=job)
-        self.relay_config = relay.relay_config
-        self.filter_template = filter_template.json
-
-    def configure_template(self) -> Filters:
-        """ STEP ONE
-            Apply Relay preferences from RelayConfig
-        """
-        pass
-
-    def _get_date_range_for_job(self) -> list:
-        """ STEP TWO
-            Depending on the job_type, derive a list of subject
-            datetime objects that are subject for scraping, for a given relay
-        """
-        pass
-
-    def derive_daily_filters(self) -> FiltersList:
-        """ STEP THREE
-            Given a template configured for individual relay configs and
-            a single date, derive a FiltersList that use the `since` and 
-            `until` params on the filter to walk the Relay's history for the
-            date
-        """
-        pass
-
-    def derive_subscriptions(self) -> list:
-        """ STEP FOUR
-            Create subscriptions for each filter
-        """
         pass
 

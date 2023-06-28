@@ -1,4 +1,5 @@
 from enum import Enum
+from dataclasses import dataclass
 # Core
 # TODO Find out what a good start date is
 EPOCH_START = "8/15/2022"
@@ -39,3 +40,18 @@ class JOB_STATUS(Enum):
     FAILED    = "FAILED"
     COMPLETED = "COMPLETED"
 
+
+@dataclass
+class FilterBlueprint:
+    """
+        Object to be passed to the
+        FilterManager describing
+        how many and what kinds of
+        Filter and Subscription objects
+        to create.
+
+        Please note the differences between
+        the Pynostr Filters type and the Filter
+        Database table. 
+    """
+    pass

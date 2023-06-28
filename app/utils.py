@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from dateutil.parser import parse
 from datetime import datetime, time, timedelta, timezone
 from app.constants import MS_MULTIPLE, HR, DAY, MIN, EPOCH_START, \
-    CUTOFF_TIMEZONE, CUTOFF_HOUR
+    CUTOFF_TIMEZONE, CUTOFF_HOUR, SECOND
 # TODO Write Tests on conversions and timezone handling
 # TODO Consider converting datetime.today() to: datetime.now(tzinfo=ZoneInfo(...))
 def new_subscription_id() -> str:
@@ -174,6 +174,13 @@ def get_unix_ts_n_hours_from_now(ts: int, hours: int = 1) -> int:
 def get_unix_ts_n_days_ago(ts: int, days: int = 1) -> int:
     diff = DAY * days
     return ts - diff
+
+def increment_ts_n_seconds(ts: int, seconds: int) -> int:
+    """
+        return ts param, seconds param later
+    """
+    step = seconds * SECOND
+    return ts + step
 
 def generate_stepwise_filters_for_date(dt: datetime, step: int = 5) -> list:
     """

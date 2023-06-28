@@ -1,11 +1,20 @@
+import copy
+from typing import List
 from datetime import datetime
-from app.repository.models import Job
+from app.services.admin import Admin
+from app.repository.models import JobType, Job, Filter
+from app.repository.connection import yield_db_session
 from app.services.filter_manager import FilterManager
-
+from app.utils import get_today_raw, get_last_second_of_date, \
+    get_first_second_of_date
+# TODO Eventually the JobManager should receive only one Job
+# and the Processor and each JobManager will create its own DB Session.
 class JobManager:
     def __init__(
-        self, 
-        job_template: Job,
+        self,
+        #db_session, # Eventually this will be passed down, but at time of development component is top of the hierarchy
+        date: datetime,
+        job_type_id: int,
     ):
         """
             Fetches the datetime and unix timestamp
@@ -16,38 +25,65 @@ class JobManager:
             Gathers and sets information related to running
             each job after examination.
         """
-        self.job_template = job_template
+        self.job_type_id = job_type_id
+        self.job_date = date
+        self.job_type_id = job_type_id
+        # Set DB and Lookup Parameters for jobs
+        self.session = next(yield_db_session())
+        self.admin = Admin(self.session)
+        # Get Job Type
+        self.job_type: JobType = [jt for jt in self.admin.lookup_job_types() if jt.id == self.job_type_id][0]
+        # Get Batch Bounds Based on Job Type
+        job_batch_datetime_bounds = self._get_datetime_batch_bounds()
+        self.job_batch_start_bound: datetime = job_batch_datetime_bounds[0]
+        self.job_batch_end_bound: datetime = job_batch_datetime_bounds[1]
+        # Get Jobs to Process
+        self.jobs_batch = self.pull_batch_jobs()
+        # Operational Attrs
+        self.queued_jobs = copy.deepcopy(self.jobs_batch)
+        self.completed_jobs = []
+        # TODO Left Off Start creating filters
+        # - Create initial filter 
+
+        # - Determine the incrementer
+
+        # - Generate a batch of filters based on 
+        #   the initial template and the incrementer.
+
+        # - Assist in the creation of subscriptions that
+        #   align to each filter
+
+    def _get_datetime_batch_bounds(self) -> tuple:
+        """
+            returns tuple where idx 0 is start datetime bound
+            and idx 1 is end datetime bound
+
+            ignoring use of match here for now
+        """
+        if "historical" in self.job_type.process:
+            # TODO Re-evaluate this range for historical processes later
+            # Get all of today's scheduled historical jobs
+            return (get_first_second_of_date(), get_last_second_of_date())
+        elif "daily" in self.job_type.process:
+            # TODO Implement daily bounds
+            pass
     
-    def _get_batch_time_range(self) -> tuple:
-        pass
-
-    def _get_jobs_batch(self, start: datetime, stop: datetime) -> list[Job]:
-        pass
-
-    def _pull_daily_job(
-        self, 
-        relay_id: int
-    ) -> Job:
-        pass
+    def pull_batch_jobs(self) -> List[Job]:
+        try:
+            return self.session.query(Job).filter(
+                # Known Job Type ID
+                Job.job_type == self.job_type_id,
+                # Jobs scheduled to start after the first second of today (or first second)
+                Job.start_time >= self.job_batch_start_bound,
+                # Jobs scheduled to start before the last second of today (or last second)
+                Job.start_time <= self.job_batch_end_bound,
+            ).all()
+        except Exception as e:
+            # TODO Logging
+            # TODO Error Handling
+            print(f"pull_batch_jobs failed with error: {e}.")
+            raise e
     
-    def _pull_historical_job(
-            self, 
-            relay_id: int
-    ) -> Job:
-        pass
-
-    def pull_jobs_for_date_range(self, 
-        start_bound: datetime, 
-        end_bound: datetime
-    ) -> list:
-        pass
-
-    def schedule_next_daily_jobs(self) -> bool:
-        pass
-
-    def schedule_historical_job(self) -> bool:
-        pass
-
     def register_daily_job(self) -> bool:
         pass
 

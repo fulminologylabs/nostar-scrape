@@ -1,11 +1,9 @@
 from __future__ import annotations
 from typing import List
 from datetime import datetime
-#from sqlalchemy.ext.mutable import MutableDict # Could help with JSON types
 from sqlalchemy import ForeignKey, text, JSON
 from sqlalchemy.types import JSON, DateTime
 from app.utils import default_relay_config_epoch_start
-#from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 # Epoch start
 default_epoch_relay_config = default_relay_config_epoch_start()
@@ -15,9 +13,8 @@ class Base(DeclarativeBase):
         DB Base Class
     """
     type_annotation_map = {
-        dict: JSON, # replaced with MutableDict use
+        dict: JSON, # TODO explore MutableDict use
         datetime: DateTime,
-        #int: UUID,
     }
 
 # Tables

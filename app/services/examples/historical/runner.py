@@ -1,16 +1,17 @@
 from app.utils import new_subscription_id, new_job_id, new_batch_id
-from services.db import DBService
+from app.services.db import DBService
 import tornado.ioloop
 from tornado import gen
 from pynostr.relay import Relay
 from pynostr.message_pool import MessagePool
-from services.mappers.events.text_note import handle_text_note_bulk
+from app.services.mappers.events.text_note import handle_text_note_bulk
 
 def _run(
         relay: Relay,
         db: DBService,
         msg_pool: MessagePool, 
         io_loop: tornado.ioloop.IOLoop,
+        limit: int = 1000
     ) -> list:
     # New Job ID TODO This might need to move
     JOB_ID = new_job_id()
@@ -34,5 +35,9 @@ def _run(
     # Handle Events
     events = msg_pool.get_all_events()
     transformed = handle_text_note_bulk([event.event for event in events], JOB_ID)
+    # Compare len transformed to limit
+    result_size = len(transformed)
+    print(f"RESULT COUNT: {result_size}")
+    print(f"LIMIT: {limit}")
     # Finish
     #db.write(transformed)    

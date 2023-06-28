@@ -1,6 +1,6 @@
 from app.repository.models import Relay, Base, RelayConfig, Job, \
     JobType, EventKind, Filter, Subscription, Event
-from app.repository.connection import engine, Session, _yield_db_session
+from app.repository.connection import engine, Session, yield_db_session
 from app.utils import load_environment_variables, get_db_uri
 from sqlalchemy.orm import Session as _Session
 from sqlalchemy import select

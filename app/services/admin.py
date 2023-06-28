@@ -140,7 +140,7 @@ class Admin:
         self,
         relay_id: int,
         job_type_id: int,
-    ):
+    ) -> Job:
         try:
             pending_status = [
                 status for status in self.lookup_statuses() \
@@ -159,7 +159,6 @@ class Admin:
             # commit
             self.session.commit()
             self.session.refresh(job)
-            print()
             return job
         except Exception as e:
             # TODO Error Handling

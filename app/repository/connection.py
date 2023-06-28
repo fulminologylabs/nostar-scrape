@@ -13,8 +13,13 @@ engine = create_engine(
 Session = sessionmaker(engine)
 
 # Not currently used
-def _yield_db_session():
+def yield_db_session():
     session = Session()
-    yield session
+    try:
+        yield session
+    except:
+        # TODO ensure this is not dangerously redundant
+        # against the exception blocks of functions receiving/using yield_db_session
+        session.rollback()
     # Close
     session.close()
