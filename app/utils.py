@@ -4,7 +4,7 @@ from zoneinfo import ZoneInfo
 from dotenv import load_dotenv
 from dateutil.parser import parse
 from datetime import datetime, time, timedelta, timezone
-from app.constants import MS_MULTIPLE, HR, DAY, MIN, EPOCH_START, \
+from app.constants import HR, DAY, MIN, EPOCH_START, \
     CUTOFF_TIMEZONE, CUTOFF_HOUR, SECOND
 # TODO Write Tests on conversions and timezone handling
 # TODO Consider converting datetime.today() to: datetime.now(tzinfo=ZoneInfo(...))
@@ -153,7 +153,8 @@ def get_first_second_of_date(dt: datetime) -> datetime:
     return datetime.combine(dt, time.min, tzinfo=timezone.utc)
 
 def convert_datetime_to_unix_ts(dt: datetime) -> int:
-    return int(dt.timestamp() * MS_MULTIPLE)
+    return int(dt.timestamp())
+
 
 def convert_unix_ts_to_datetime(ts: int) -> datetime:
     return datetime.fromtimestamp(ts)

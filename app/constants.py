@@ -11,7 +11,7 @@ RELAY_LIST = [
 ]
 NOSTR_BAND_ALL = "wss://relay.nostr.band/all"
 # Dates
-MS_MULTIPLE = 1e3
+#MS_MULTIPLE = 1e3 # TODO no longer being used
 SECOND      = 1
 MIN         = 60
 HR          = 60 * 60

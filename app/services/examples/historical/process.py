@@ -12,7 +12,8 @@ from pynostr.base_relay import RelayPolicy
 from pynostr.message_pool import MessagePool
 from datetime import timedelta
 # TODO Are subscriptions being closed properly?
-RELAY_URL = "wss://nostr-pub.wellorder.net"
+#RELAY_URL = "wss://nostr-pub.wellorder.net"
+RELAY_URL = "wss://relay.damus.io"
 TIMEOUT = 30
 LIMIT = 5
 JOB_ID = new_job_id()
@@ -41,12 +42,8 @@ def skeleton_process():
     print(f"STARTING POINT: {start_time}")
     since_param = convert_datetime_to_unix_ts(start_time)
     # Until Param of Filter
-    net = 60 * 60  # 1 hour
-    until_time = get_first_second_of_date(
-        get_yesterday_raw() - timedelta(days=3)
-    )
-    #until_param = increment_ts_n_seconds(since_param, seconds=net)
-    until_param = convert_datetime_to_unix_ts(until_time)
+    net = 60 * 60 * 24 * 6  # 1 week
+    until_param = increment_ts_n_seconds(since_param, seconds=net)
     # Limit Param of Filter
     print(f"{since_param} and {until_param}")
     limit = 500
@@ -56,10 +53,8 @@ def skeleton_process():
             Filters(
                 kinds=[EventKind.TEXT_NOTE],
                 limit=limit,
-                #since=since_param,
-                # NOTE this with no since param
-                # works
-                until=since_param,
+                since=since_param,
+                until=until_param,
             )
         ]
     )
