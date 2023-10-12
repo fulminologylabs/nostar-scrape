@@ -45,7 +45,7 @@ class JobManager:
         # TODO Left Off Start creating filters
         # - Create initial filter 
 
-        # - Determine the incrementer
+        # - Determine the incrementer: 60 * 60 * 24 * 6  # 1 week
 
         # - Generate a batch of filters based on 
         #   the initial template and the incrementer.
@@ -84,6 +84,22 @@ class JobManager:
             print(f"pull_batch_jobs failed with error: {e}.")
             raise e
     
+    def pop_job_to_processor(self) -> Job:
+        """
+            Pass next job from self.queued_jobs to the processor.
+            When this job is returned back to the component,
+            it will handled as completed and appended to
+            self.completed_jobs
+        """
+        pass
+
+    def handle_completed_job(self, completed_job: Job) -> bool:
+        """
+            What the processor will use to pass a completed (or errored)
+            job back to the job manager for handling its results.
+        """
+        pass
+
     def register_daily_job(self) -> bool:
         pass
 
